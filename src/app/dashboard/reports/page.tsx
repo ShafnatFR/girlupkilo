@@ -4,7 +4,7 @@ import { getProfile } from '@/lib/supabase/server-helpers';
 import type { Profile, Reimbursement } from '@/lib/types';
 import { formatCurrency } from '@/lib/utils';
 import { STATUS_LABELS } from '@/lib/types';
-import { BarChart3, TrendingUp, DollarSign } from 'lucide-react';
+import { BarChart3, TrendingUp, DollarSign, CheckCircle, Clock } from 'lucide-react';
 
 export default async function ReportsPage() {
   const profile = (await getProfile()) as Profile | null;

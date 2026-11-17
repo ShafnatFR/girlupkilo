@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // GET /api/reimbursements/[id] - Ambil detail reimbursement
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,7 +19,7 @@ export async function GET(
   const { data, error } = await supabase
     .from('reimbursements')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .eq('user_id', user.id)
     .single();
 
@@ -31,9 +32,10 @@ export async function GET(
 
 // PATCH /api/reimbursements/[id] - Update reimbursement
 export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   const {
     data: { user },
@@ -48,7 +50,7 @@ export async function PATCH(
   const { data, error } = await supabase
     .from('reimbursements')
     .update(body)
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .eq('user_id', user.id)
     .select()
     .single();
@@ -62,9 +64,10 @@ export async function PATCH(
 
 // DELETE /api/reimbursements/[id] - Hapus reimbursement
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   const {
     data: { user },
@@ -77,7 +80,7 @@ export async function DELETE(
   const { error } = await supabase
     .from('reimbursements')
     .delete()
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .eq('user_id', user.id);
 
   if (error) {

@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // PATCH /api/approvals/[id] - Setujui atau tolak reimbursement
 export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   const {
     data: { user },
@@ -37,7 +38,7 @@ export async function PATCH(
   const { data: reimbursement } = await supabase
     .from('reimbursements')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .single();
 
   if (!reimbursement) {
@@ -118,7 +119,7 @@ export async function PATCH(
   const { data, error } = await supabase
     .from('reimbursements')
     .update(updates)
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .select()
     .single();
 
