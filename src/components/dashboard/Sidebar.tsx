@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   X,
+  Database,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -27,8 +28,11 @@ const navItems = [
   { href: '/dashboard/submissions', label: 'Pengajuan Saya', icon: FileText },
   { href: '/dashboard/approvals', label: 'Persetujuan', icon: CheckSquare },
   { href: '/dashboard/reports', label: 'Laporan', icon: BarChart3 },
+  { href: '/dashboard/cms', label: 'CMS Konten', icon: Database },
   { href: '/dashboard/settings', label: 'Pengaturan', icon: Settings },
 ];
+
+const CMS_ROLES = ['admin', 'manager'];
 
 export default function Sidebar({ profile }: SidebarProps) {
   const pathname = usePathname();
@@ -46,12 +50,19 @@ export default function Sidebar({ profile }: SidebarProps) {
     }
   }
 
-  // Staf tidak perlu melihat menu persetujuan.
-  const visibleItems = navItems.filter(
-    (item) =>
-      item.href !== '/dashboard/approvals' ||
-      ['manager', 'finance', 'admin'].includes(profile.role)
-  );
+  // Tampilkan menu sesuai peran pengguna.
+  const visibleItems = navItems.filter((item) => {
+    if (item.href === '/dashboard/approvals') {
+      return ['manager', 'finance', 'admin'].includes(profile.role);
+    }
+    if (item.href === '/dashboard/cms') {
+      return CMS_ROLES.includes(profile.role);
+    }
+    return true;
+  });
+
+  const isActive = (href: string) =>
+    href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(href);
 
   return (
     <>
@@ -82,14 +93,14 @@ export default function Sidebar({ profile }: SidebarProps) {
         <nav className="flex-1 space-y-1 p-3">
           {visibleItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'
+                  active ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 <Icon size={18} />

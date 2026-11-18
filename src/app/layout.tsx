@@ -5,9 +5,19 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Reimburse — Sistem Reimbursement Keuangan',
+  title: {
+    default: 'Girl Up UI — When Girls Rise, We All Rise',
+    template: '%s',
+  },
   description:
-    'Sistem pengajuan dan persetujuan reimbursement keuangan perusahaan.',
+    'Girl Up Universitas Indonesia — gerakan kepemimpinan perempuan muda untuk kesetaraan gender. Bagian dari jaringan global Girl Up.',
+  openGraph: {
+    title: 'Girl Up UI — When Girls Rise, We All Rise',
+    description:
+      'Gerakan kepemimpinan perempuan muda di Universitas Indonesia yang mendorong kesetaraan gender, kepemimpinan, dan dampak sosial.',
+    type: 'website',
+    locale: 'id_ID',
+  },
 };
 
 export default function RootLayout({

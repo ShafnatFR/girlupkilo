@@ -8,6 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Dipakai modul internal (reimbursement).
         brand: {
           50: '#eef6ff',
           100: '#d9eaff',
@@ -20,6 +21,20 @@ module.exports = {
           800: '#193cb6',
           900: '#1a378f',
           950: '#152257',
+        },
+        // Palet publik Girl Up — magenta dengan aksen netral.
+        gu: {
+          50: '#fff1f5',
+          100: '#ffe4ec',
+          200: '#fecdd8',
+          300: '#fda4bb',
+          400: '#fb7197',
+          500: '#f43f76',
+          600: '#e11d57',
+          700: '#be123f',
+          800: '#9f1239',
+          900: '#881337',
+          950: '#4c0519',
         },
       },
       fontFamily: {
