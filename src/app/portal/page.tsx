@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 import { requireUser } from '@/lib/auth';
+import TopHeader from '@/components/dashboard/TopHeader';
 import {
   DASHBOARD_MODULES,
   type AccentColor,
@@ -48,6 +49,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <TopHeader profile={profile} />
       <div>
         <h1 className="text-2xl font-bold text-slate-900">
           Halo, {profile.full_name || 'Pengguna'} 👋
