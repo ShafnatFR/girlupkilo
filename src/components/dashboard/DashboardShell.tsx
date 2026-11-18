@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ArrowLeft, LogOut, Menu, X } from 'lucide-react';
 
+import TopHeader from '@/components/dashboard/TopHeader';
 import {
   resolveModule,
   type DashboardModule,
@@ -33,10 +34,11 @@ export default function DashboardShell({
   const pathname = usePathname();
   const module = resolveModule(pathname);
 
-  // Launcher (/portal): tanpa sidebar, konten selebar penuh.
+  // Launcher (/portal): tanpa sidebar, konten selebar penuh — dark mode.
   if (!module) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-950">
+        <TopHeader profile={profile} />
         <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8">{children}</div>
       </div>
     );
@@ -79,20 +81,20 @@ function ModuleLayout({
     pathname === href || pathname.startsWith(href + '/');
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-950">
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/80 lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 transform flex-col bg-white shadow-lg transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 transform flex-col bg-slate-900 shadow-lg transition-transform lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center justify-between border-b px-6">
+        <div className="flex h-16 items-center justify-between border-b border-slate-800 px-6">
           <Link
             href="/portal"
             className="flex items-center gap-2"
@@ -102,10 +104,10 @@ function ModuleLayout({
               <span className="font-bold">R</span>
             </span>
             <span className="flex flex-col leading-none">
-              <span className="text-sm font-bold text-slate-900">
+              <span className="text-sm font-bold text-slate-100">
                 {module.title}
               </span>
-              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-slate-500">
                 Modul
               </span>
             </span>
@@ -120,11 +122,11 @@ function ModuleLayout({
         </div>
 
         {/* Kembali ke daftar modul */}
-        <div className="border-b px-3 py-2">
+        <div className="border-b border-slate-800 px-3 py-2">
           <Link
             href="/portal"
             onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-100"
           >
             <ArrowLeft size={16} />
             Semua Modul
@@ -142,8 +144,8 @@ function ModuleLayout({
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   active
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? 'bg-brand-900/30 text-brand-400'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
                 }`}
               >
                 <Icon size={18} />
@@ -153,13 +155,13 @@ function ModuleLayout({
           })}
         </nav>
 
-        <div className="border-t p-4">
+        <div className="border-t border-slate-800 p-4">
           <div className="mb-3 flex items-center gap-3 rounded-lg px-3 py-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-900/30 text-sm font-semibold text-brand-400">
               {getInitials(profile.full_name || profile.email)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-slate-900">
+              <p className="truncate text-sm font-medium text-slate-100">
                 {profile.full_name || 'Pengguna'}
               </p>
               <p className="truncate text-xs text-slate-500">
@@ -170,7 +172,7 @@ function ModuleLayout({
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-100"
           >
             <LogOut size={18} />
             {loggingOut ? 'Keluar...' : 'Keluar'}
@@ -179,7 +181,7 @@ function ModuleLayout({
       </aside>
 
       <button
-        className="fixed left-4 top-4 z-50 rounded-lg bg-white p-2 shadow-md lg:hidden"
+        className="fixed left-4 top-4 z-50 rounded-lg bg-slate-900 p-2 shadow-md border border-slate-800 lg:hidden"
         onClick={() => setMobileOpen(true)}
         aria-label="Buka menu"
       >
@@ -187,6 +189,7 @@ function ModuleLayout({
       </button>
 
       <main className="lg:pl-64">
+        <TopHeader profile={profile} />
         <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8">{children}</div>
       </main>
     </div>
