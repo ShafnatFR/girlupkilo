@@ -1,131 +1,81 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// PATCH /api/approvals/[id] - Setujui atau tolak reimbursement
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const resolvedParams = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+import { getCurrentUser } from '@/lib/auth';
+import { query, queryOne } from '@/lib/db';
+import { isApprover } from '@/lib/validation';
+import type { Reimbursement } from '@/lib/types';
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+type Update = {
+  status: Reimbursement['status'];
+  manager_approver?: string;
+  manager_approved_at?: string;
+  finance_approver?: string;
+  finance_approved_at?: string;
+  paid_at?: string;
+  paid_by?: string;
+  rejection_reason?: string;
+};
 
-  // Cek role
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
+/** PATCH /api/approvals/[id] — setujui atau tolak pengajuan. */
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!isApprover(user.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  if (!profile || !['manager', 'finance', 'admin'].includes(profile.role)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  const body = await request.json();
-  const { action, rejection_reason } = body;
-
-  if (!['approve', 'reject'].includes(action)) {
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-  }
-
-  // Ambil reimbursement
-  const { data: reimbursement } = await supabase
-    .from('reimbursements')
-    .select('*')
-    .eq('id', resolvedParams.id)
-    .single();
-
-  if (!reimbursement) {
+  const { id } = await params;
+  if (!/^[0-9a-f-]{36}$/i.test(id)) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  // Tentukan status berikutnya berdasarkan action dan role
-  let updates: any = {};
-
-  if (action === 'reject') {
-    if (!rejection_reason) {
-      return NextResponse.json(
-        { error: 'Rejection reason required' },
-        { status: 400 }
-      );
-    }
-    updates = {
-      status: 'rejected',
-      rejection_reason,
-    };
-  } else {
-    // approve
-    if (profile.role === 'manager' && reimbursement.status === 'submitted') {
-      updates = {
-        status: 'manager_approved',
-        manager_approver: user.id,
-        manager_approved_at: new Date().toISOString(),
-      };
-    } else if (
-      profile.role === 'finance' &&
-      reimbursement.status === 'manager_approved'
-    ) {
-      updates = {
-        status: 'finance_approved',
-        finance_approver: user.id,
-        finance_approved_at: new Date().toISOString(),
-      };
-    } else if (profile.role === 'admin') {
-      // Admin bisa approve di tahap manapun
-      if (reimbursement.status === 'submitted') {
-        updates = {
-          status: 'manager_approved',
-          manager_approver: user.id,
-          manager_approved_at: new Date().toISOString(),
-        };
-      } else if (reimbursement.status === 'manager_approved') {
-        updates = {
-          status: 'finance_approved',
-          finance_approver: user.id,
-          finance_approved_at: new Date().toISOString(),
-        };
-      } else if (reimbursement.status === 'finance_approved') {
-        updates = {
-          status: 'paid',
-          paid_at: new Date().toISOString(),
-          paid_by: user.id,
-        };
-      }
-    } else if (
-      profile.role === 'finance' &&
-      reimbursement.status === 'finance_approved'
-    ) {
-      updates = {
-        status: 'paid',
-        paid_at: new Date().toISOString(),
-        paid_by: user.id,
-      };
-    }
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Body JSON tidak valid' }, { status: 400 });
   }
 
-  if (!updates || Object.keys(updates).length === 0) {
+  const action = body.action;
+  if (action !== 'approve' && action !== 'reject') {
+    return NextResponse.json({ error: 'Aksi tidak valid' }, { status: 400 });
+  }
+
+  const reimbursement = await queryOne<Reimbursement>(
+    'SELECT * FROM public.reimbursements WHERE id = $1',
+    [id]
+  );
+  if (!reimbursement) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+  const now = new Date().toISOString();
+  let update: Update | null = null;
+
+  if (action === 'reject') {
+    if (['paid', 'rejected'].includes(reimbursement.status)) {
+      return NextResponse.json({ error: 'Pengajuan ini sudah final' }, { status: 409 });
+    }
+    const reason = typeof body.rejection_reason === 'string' ? body.rejection_reason.trim() : '';
+    if (!reason) return NextResponse.json({ error: 'Alasan penolakan wajib diisi' }, { status: 400 });
+    update = { status: 'rejected', rejection_reason: reason.slice(0, 1000) };
+  } else if (reimbursement.status === 'submitted' && ['manager', 'admin'].includes(user.role)) {
+    update = { status: 'manager_approved', manager_approver: user.id, manager_approved_at: now };
+  } else if (reimbursement.status === 'manager_approved' && ['finance', 'admin'].includes(user.role)) {
+    update = { status: 'finance_approved', finance_approver: user.id, finance_approved_at: now };
+  } else if (reimbursement.status === 'finance_approved' && ['finance', 'admin'].includes(user.role)) {
+    update = { status: 'paid', paid_at: now, paid_by: user.id };
+  }
+
+  if (!update) {
     return NextResponse.json(
-      { error: 'Cannot approve at this stage' },
-      { status: 400 }
+      { error: 'Kamu tidak berwenang menyetujui pengajuan pada tahap ini' },
+      { status: 403 }
     );
   }
 
-  const { data, error } = await supabase
-    .from('reimbursements')
-    .update(updates)
-    .eq('id', resolvedParams.id)
-    .select()
-    .single();
+  const entries = Object.entries(update);
+  const sets = entries.map(([key], index) => `${key} = $${index + 2}`);
+  const rows = await query<Reimbursement>(
+    `UPDATE public.reimbursements SET ${sets.join(', ')} WHERE id = $1 RETURNING *`,
+    [id, ...entries.map(([, value]) => value)]
+  );
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
+  return NextResponse.json(rows[0]);
 }

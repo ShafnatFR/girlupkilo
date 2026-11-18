@@ -1,91 +1,91 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// GET /api/reimbursements/[id] - Ambil detail reimbursement
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const resolvedParams = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+import { getCurrentUser } from '@/lib/auth';
+import { query, queryOne } from '@/lib/db';
+import type { Reimbursement } from '@/lib/types';
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data, error } = await supabase
-    .from('reimbursements')
-    .select('*')
-    .eq('id', resolvedParams.id)
-    .eq('user_id', user.id)
-    .single();
-
-  if (error || !data) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  return NextResponse.json(data);
+async function loadOwned(id: string, userId: string) {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  return queryOne<Reimbursement>(
+    'SELECT * FROM public.reimbursements WHERE id = $1 AND user_id = $2',
+    [id, userId]
+  );
 }
 
-// PATCH /api/reimbursements/[id] - Update reimbursement
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const resolvedParams = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+/** GET /api/reimbursements/[id] */
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const row = /^[0-9a-f-]{36}$/i.test(id)
+    ? await queryOne<Reimbursement>('SELECT * FROM public.reimbursements WHERE id = $1', [id])
+    : null;
+
+  if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  if (row.user_id !== user.id && !['manager', 'finance', 'admin'].includes(user.role)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const body = await request.json();
-
-  const { data, error } = await supabase
-    .from('reimbursements')
-    .update(body)
-    .eq('id', resolvedParams.id)
-    .eq('user_id', user.id)
-    .select()
-    .single();
-
-  if (error || !data) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  return NextResponse.json(data);
+  return NextResponse.json(row);
 }
 
-// DELETE /api/reimbursements/[id] - Hapus reimbursement
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const resolvedParams = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+/** PATCH /api/reimbursements/[id] — hanya draft milik sendiri yang boleh diubah. */
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const existing = await loadOwned(id, user.id);
+  if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  if (existing.status !== 'draft') {
+    return NextResponse.json({ error: 'Hanya draft yang bisa diubah' }, { status: 409 });
   }
 
-  const { error } = await supabase
-    .from('reimbursements')
-    .delete()
-    .eq('id', resolvedParams.id)
-    .eq('user_id', user.id);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Body JSON tidak valid' }, { status: 400 });
   }
 
-  return NextResponse.json({ success: true });
+  // Hanya kolom aman yang bisa diubah dari klien.
+  const allowed: Record<string, unknown> = {};
+  if (typeof body.title === 'string') allowed.title = body.title.trim().slice(0, 200);
+  if (typeof body.category === 'string') allowed.category = body.category;
+  if (body.amount !== undefined) allowed.amount = Number(body.amount);
+  if (typeof body.expense_date === 'string') allowed.expense_date = body.expense_date;
+  if (body.description !== undefined) {
+    allowed.description = typeof body.description === 'string' ? body.description.slice(0, 2000) : null;
+  }
+  allowed.status = body.status === 'submitted' ? 'submitted' : 'draft';
+
+  const entries = Object.entries(allowed);
+  const sets = entries.map(([key], index) => `${key} = $${index + 3}`);
+  const rows = await query<Reimbursement>(
+    `UPDATE public.reimbursements SET ${sets.join(', ')}
+      WHERE id = $1 AND user_id = $2 RETURNING *`,
+    [id, user.id, ...entries.map(([, value]) => value)]
+  );
+
+  return NextResponse.json(rows[0]);
+}
+
+/** DELETE /api/reimbursements/[id] — hanya draft milik sendiri. */
+export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const { id } = await params;
+  const rows = await query(
+    `DELETE FROM public.reimbursements
+      WHERE id = $1 AND user_id = $2 AND status = 'draft' RETURNING id`,
+    [id, user.id]
+  );
+
+  if (rows.length === 0) {
+    return NextResponse.json({ error: 'Tidak ditemukan atau sudah diajukan' }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true });
 }

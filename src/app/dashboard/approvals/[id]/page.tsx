@@ -1,36 +1,26 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { getProfile } from '@/lib/supabase/server-helpers';
-import type { Profile, Reimbursement } from '@/lib/types';
+import { notFound, redirect } from 'next/navigation';
+import { requireUser } from '@/lib/auth';
+import { getReimbursementForUser } from '@/lib/reimbursements';
 import ApprovalDetailForm from '@/components/approvals/ApprovalDetailForm';
 
 export default async function ApprovalDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const profile = (await getProfile()) as Profile | null;
-  if (!profile) redirect('/login');
+  const { id } = await params;
+  const profile = await requireUser();
 
   if (!['manager', 'finance', 'admin'].includes(profile.role)) {
     redirect('/dashboard');
   }
 
-  const supabase = await createClient();
-
-  const { data: reimbursement } = await supabase
-    .from('reimbursements')
-    .select('*')
-    .eq('id', params.id)
-    .single();
-
-  if (!reimbursement) {
-    redirect('/dashboard/approvals');
-  }
+  const item = await getReimbursementForUser(id, profile);
+  if (!item) notFound();
 
   return (
     <div className="mx-auto max-w-4xl">
-      <ApprovalDetailForm reimbursement={reimbursement as Reimbursement} />
+      <ApprovalDetailForm reimbursement={item} />
     </div>
   );
 }

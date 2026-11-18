@@ -1,41 +1,14 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
-// GET /api/approvals - Ambil pengajuan yang perlu disetujui
+import { getCurrentUser } from '@/lib/auth';
+import { listApprovals } from '@/lib/reimbursements';
+import { isApprover } from '@/lib/validation';
+
+/** GET /api/approvals — pengajuan yang relevan untuk approver. */
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!isApprover(user.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  // Cek role
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile || !['manager', 'finance', 'admin'].includes(profile.role)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  const { data, error } = await supabase
-    .from('reimbursements')
-    .select(
-      '*, profile:profiles!reimbursements_user_id_fkey(full_name, email, department)'
-    )
-    .neq('status', 'draft')
-    .neq('status', 'rejected')
-    .neq('status', 'paid')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
+  return NextResponse.json(await listApprovals(user.role));
 }

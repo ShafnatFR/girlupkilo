@@ -1,52 +1,31 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+const SESSION_COOKIE = 'rg_session';
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
-
-  // Segarkan sesi — penting agar token tidak kedaluwarsa
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+/**
+ * Middleware hanya memeriksa ADA-TIDAKNYA cookie sesi (tanpa akses database,
+ * karena middleware berjalan sebelum runtime Node). Keabsahan sesi diperiksa
+ * di layout dashboard lewat getCurrentUser().
+ */
+export function middleware(request: NextRequest) {
+  const hasSession = Boolean(request.cookies.get(SESSION_COOKIE)?.value);
   const { pathname } = request.nextUrl;
 
-  // Belum login tapi membuka dashboard -> ke /login
-  if (!user && pathname.startsWith('/dashboard')) {
+  if (!hasSession && pathname.startsWith('/dashboard')) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    url.search = '';
     return NextResponse.redirect(url);
   }
 
-  // Sudah login tapi membuka /login atau /register -> ke dashboard
-  if (user && (pathname === '/login' || pathname === '/register')) {
+  if (hasSession && (pathname === '/login' || pathname === '/register')) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
+    url.search = '';
     return NextResponse.redirect(url);
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

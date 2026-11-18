@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { EXPENSE_CATEGORIES, type ExpenseCategory } from '@/lib/types';
 import { Loader2, Upload, X } from 'lucide-react';
+
+type UploadResult = { url: string; name: string };
 
 export default function NewSubmissionForm() {
   const router = useRouter();
@@ -20,46 +21,35 @@ export default function NewSubmissionForm() {
     description: '',
   });
 
-  const [receiptFile, setReceiptFile] = useState<File | null>(null);
-  const [receiptUrl, setReceiptUrl] = useState<string>('');
+  const [uploaded, setUploaded] = useState<UploadResult | null>(null);
 
   async function uploadReceipt(file: File) {
     setUploading(true);
     setError('');
 
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    const body = new FormData();
+    body.append('file', file);
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+    try {
+      const response = await fetch('/api/upload', { method: 'POST', body });
+      const data = await response.json().catch(() => ({}));
 
-    const { error: uploadError } = await supabase.storage
-      .from('receipts')
-      .upload(fileName, file);
+      if (!response.ok) {
+        setError(data.error || 'Gagal mengunggah file');
+        return;
+      }
 
-    if (uploadError) {
-      setError(uploadError.message);
+      setUploaded({ url: data.url, name: data.name });
+    } catch {
+      setError('Tidak dapat menghubungi server saat mengunggah');
+    } finally {
       setUploading(false);
-      return;
     }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from('receipts').getPublicUrl(fileName);
-
-    setReceiptUrl(publicUrl);
-    setUploading(false);
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) {
-      setReceiptFile(file);
-      uploadReceipt(file);
-    }
+    if (file) uploadReceipt(file);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -67,41 +57,39 @@ export default function NewSubmissionForm() {
     setLoading(true);
     setError('');
 
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('reimbursements')
-      .insert({
-        user_id: user.id,
-        title: formData.title,
-        category: formData.category,
-        amount: parseFloat(formData.amount),
-        expense_date: formData.expense_date,
-        description: formData.description || null,
-        receipt_url: receiptUrl || null,
-        status: 'submitted',
+    try {
+      const response = await fetch('/api/reimbursements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          category: formData.category,
+          amount: Number(formData.amount),
+          expense_date: formData.expense_date,
+          description: formData.description,
+          receipt_url: uploaded?.url ?? null,
+        }),
       });
+      const data = await response.json().catch(() => ({}));
 
-    if (error) {
-      setError(error.message);
+      if (!response.ok) {
+        setError(data.error || 'Gagal menyimpan pengajuan');
+        setLoading(false);
+        return;
+      }
+
+      router.push('/dashboard/submissions');
+      router.refresh();
+    } catch {
+      setError('Tidak dapat menghubungi server');
       setLoading(false);
-      return;
     }
-
-    router.push('/dashboard/submissions');
-    router.refresh();
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">
-          Informasi Pengajuan
-        </h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">Informasi Pengajuan</h2>
 
         <div className="space-y-4">
           <div>
@@ -115,9 +103,7 @@ export default function NewSubmissionForm() {
               className="input"
               placeholder="Contoh: Transportasi ke Kantor Klien"
               value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
           </div>
 
@@ -131,10 +117,7 @@ export default function NewSubmissionForm() {
                 className="input"
                 value={formData.category}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    category: e.target.value as ExpenseCategory,
-                  })
+                  setFormData({ ...formData, category: e.target.value as ExpenseCategory })
                 }
               >
                 {EXPENSE_CATEGORIES.map((cat) => (
@@ -155,13 +138,11 @@ export default function NewSubmissionForm() {
                 type="number"
                 required
                 min="1"
-                step="1000"
+                step="any"
                 className="input"
                 placeholder="0"
                 value={formData.amount}
-                onChange={(e) =>
-                  setFormData({ ...formData, amount: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
             </div>
           </div>
@@ -176,9 +157,7 @@ export default function NewSubmissionForm() {
               required
               className="input"
               value={formData.expense_date}
-              onChange={(e) =>
-                setFormData({ ...formData, expense_date: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, expense_date: e.target.value })}
             />
           </div>
 
@@ -192,25 +171,23 @@ export default function NewSubmissionForm() {
               className="input"
               placeholder="Jelaskan lebih detail tentang pengeluaran ini..."
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
 
           <div>
             <label className="label">Bukti Pengeluaran (Opsional)</label>
             <div className="mt-1 flex items-center gap-4">
-              {receiptUrl ? (
+              {uploaded ? (
                 <div className="flex items-center gap-2 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
                   <Upload size={16} />
-                  File berhasil diunggah
+                  <a href={uploaded.url} target="_blank" rel="noreferrer" className="underline">
+                    {uploaded.name}
+                  </a>
                   <button
                     type="button"
-                    onClick={() => {
-                      setReceiptUrl('');
-                      setReceiptFile(null);
-                    }}
+                    onClick={() => setUploaded(null)}
+                    aria-label="Hapus bukti"
                   >
                     <X size={16} />
                   </button>
@@ -221,30 +198,23 @@ export default function NewSubmissionForm() {
                   {uploading ? 'Mengunggah...' : 'Pilih File'}
                   <input
                     type="file"
-                    accept="image/*,.pdf"
+                    accept="image/png,image/jpeg,image/webp,image/gif,application/pdf"
                     className="hidden"
                     onChange={handleFileChange}
                     disabled={uploading}
                   />
                 </label>
               )}
+              <span className="text-xs text-slate-500">PNG, JPG, WEBP, GIF, atau PDF. Maks 10 MB.</span>
             </div>
           </div>
         </div>
       </div>
 
-      {error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">{error}</div>}
 
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="btn-secondary"
-        >
+        <button type="button" onClick={() => router.back()} className="btn-secondary">
           Batal
         </button>
         <button type="submit" disabled={loading || uploading} className="btn-primary">

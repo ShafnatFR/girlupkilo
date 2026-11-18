@@ -13,7 +13,6 @@ import {
   X,
 } from 'lucide-react';
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import type { Profile } from '@/lib/types';
 import { ROLE_LABELS } from '@/lib/types';
@@ -35,17 +34,27 @@ export default function Sidebar({ profile }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh();
+    setLoggingOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.replace('/login');
+      router.refresh();
+    }
   }
+
+  // Staf tidak perlu melihat menu persetujuan.
+  const visibleItems = navItems.filter(
+    (item) =>
+      item.href !== '/dashboard/approvals' ||
+      ['manager', 'finance', 'admin'].includes(profile.role)
+  );
 
   return (
     <>
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
@@ -53,9 +62,8 @@ export default function Sidebar({ profile }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white shadow-lg transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 transform flex-col bg-white shadow-lg transition-transform lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -66,16 +74,13 @@ export default function Sidebar({ profile }: SidebarProps) {
             </div>
             <span className="font-bold text-slate-900">Reimburse</span>
           </div>
-          <button
-            className="lg:hidden"
-            onClick={() => setMobileOpen(false)}
-          >
+          <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Tutup menu">
             <X size={20} />
           </button>
         </div>
 
         <nav className="flex-1 space-y-1 p-3">
-          {navItems.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
             return (
@@ -84,9 +89,7 @@ export default function Sidebar({ profile }: SidebarProps) {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-slate-600 hover:bg-slate-50'
+                  isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 <Icon size={18} />
@@ -105,25 +108,24 @@ export default function Sidebar({ profile }: SidebarProps) {
               <p className="truncate text-sm font-medium text-slate-900">
                 {profile.full_name || 'Pengguna'}
               </p>
-              <p className="truncate text-xs text-slate-500">
-                {ROLE_LABELS[profile.role]}
-              </p>
+              <p className="truncate text-xs text-slate-500">{ROLE_LABELS[profile.role]}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
+            disabled={loggingOut}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
           >
             <LogOut size={18} />
-            Keluar
+            {loggingOut ? 'Keluar...' : 'Keluar'}
           </button>
         </div>
       </aside>
 
-      {/* Mobile menu button */}
       <button
         className="fixed left-4 top-4 z-50 rounded-lg bg-white p-2 shadow-md lg:hidden"
         onClick={() => setMobileOpen(true)}
+        aria-label="Buka menu"
       >
         <Menu size={20} />
       </button>
