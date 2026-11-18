@@ -13,8 +13,8 @@ export default async function SubmissionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Pengajuan Saya</h1>
-          <p className="mt-1 text-sm text-slate-500">{all.length} pengajuan reimbursement</p>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Pengajuan Saya</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{all.length} pengajuan reimbursement</p>
         </div>
         <Link href="/portal/keuangan/submissions/new" className="btn-primary">
           <Plus size={18} />
@@ -24,8 +24,8 @@ export default async function SubmissionsPage() {
 
       {all.length === 0 ? (
         <div className="card px-6 py-12 text-center">
-          <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300" />
-          <p className="text-sm text-slate-500">Belum ada pengajuan reimbursement</p>
+          <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-500" />
+          <p className="text-sm text-slate-500 dark:text-slate-400">Belum ada pengajuan reimbursement</p>
           <Link href="/portal/keuangan/submissions/new" className="btn-primary mt-4">
             Buat Pengajuan Pertama
           </Link>
@@ -34,44 +34,44 @@ export default async function SubmissionsPage() {
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="border-b bg-slate-50">
+              <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-700/60 dark:bg-slate-700/30">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Judul
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Kategori
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Tanggal
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Jumlah
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Status
                   </th>
                   <th className="px-6 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700/60">
                 {all.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50">
+                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/20">
                     <td className="px-6 py-4">
                       <Link
                         href={`/portal/keuangan/submissions/${item.id}`}
-                        className="font-medium text-slate-900 hover:text-brand-600"
+                        className="font-medium text-slate-800 hover:text-brand-600 dark:text-slate-200 dark:hover:text-brand-400"
                       >
                         {item.title}
                       </Link>
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-slate-600">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-slate-600 dark:text-slate-400">
                       {item.category.replace('_', ' ')}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                       {formatDate(item.expense_date)}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-900">
+                    <td className="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-800 dark:text-slate-200">
                       {formatCurrency(Number(item.amount))}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
@@ -82,7 +82,7 @@ export default async function SubmissionsPage() {
                     <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
                       <Link
                         href={`/portal/keuangan/submissions/${item.id}`}
-                        className="text-brand-600 hover:text-brand-700"
+                        className="text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
                       >
                         Detail
                       </Link>

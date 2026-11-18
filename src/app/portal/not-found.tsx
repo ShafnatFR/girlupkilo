@@ -9,14 +9,14 @@ import { FileQuestion, ArrowLeft } from 'lucide-react';
 export default function DashboardNotFound() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-700/40 dark:text-slate-400">
         <FileQuestion size={24} />
       </span>
 
-      <h1 className="mt-5 text-xl font-bold text-slate-900">
+      <h1 className="mt-5 text-xl font-bold text-slate-800 dark:text-slate-200">
         Data tidak ditemukan
       </h1>
-      <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-500">
+      <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-500 dark:text-slate-400">
         Pengajuan yang kamu cari mungkin sudah dihapus atau bukan milikmu.
         Kembali ke daftar untuk melanjutkan.
       </p>

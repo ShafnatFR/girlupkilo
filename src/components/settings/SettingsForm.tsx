@@ -92,15 +92,15 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Profil Saya</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-200">Profil Saya</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label" htmlFor="email">
               Email
             </label>
-            <input id="email" type="email" className="input bg-slate-50" value={profile.email} disabled />
-            <p className="mt-1 text-xs text-slate-500">Email tidak dapat diubah</p>
+            <input id="email" type="email" className="input bg-slate-50 dark:bg-slate-700/30" value={profile.email} disabled />
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Email tidak dapat diubah</p>
           </div>
 
           <div>
@@ -130,9 +130,9 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             />
           </div>
 
-          {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+          {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">{error}</div>}
           {success && (
-            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700">{success}</div>
+            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">{success}</div>
           )}
 
           <button type="submit" disabled={loading} className="btn-primary">
@@ -143,7 +143,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       </div>
 
       <div className="card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Ubah Password</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-200">Ubah Password</h2>
 
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
@@ -200,10 +200,10 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
           </div>
 
           {passwordError && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{passwordError}</div>
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">{passwordError}</div>
           )}
           {passwordSuccess && (
-            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700">
+            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">
               {passwordSuccess}
             </div>
           )}

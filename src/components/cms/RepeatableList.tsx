@@ -48,15 +48,18 @@ export default function RepeatableList<T>({
   return (
     <div className="space-y-3">
       {items.length === 0 && (
-        <p className="rounded-lg border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500">
+        <p className="rounded-lg border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-700/60 dark:text-slate-400">
           {emptyLabel}
         </p>
       )}
 
       {items.map((item, index) => (
-        <div key={index} className="rounded-lg border border-slate-200 bg-slate-50/60 p-4">
+        <div
+          key={index}
+          className="rounded-lg border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700/60 dark:bg-slate-800/40"
+        >
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Butir {index + 1}
             </span>
             <div className="flex items-center gap-1">
@@ -64,7 +67,7 @@ export default function RepeatableList<T>({
                 type="button"
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
-                className="rounded-md p-1.5 text-slate-500 hover:bg-white disabled:opacity-30"
+                className="rounded-md p-1.5 text-slate-500 hover:bg-white hover:text-slate-700 disabled:opacity-30 dark:text-slate-400 dark:hover:bg-slate-700/60 dark:hover:text-slate-200"
                 aria-label="Naikkan urutan"
               >
                 <ArrowUp size={15} />
@@ -73,7 +76,7 @@ export default function RepeatableList<T>({
                 type="button"
                 onClick={() => move(index, 1)}
                 disabled={index === items.length - 1}
-                className="rounded-md p-1.5 text-slate-500 hover:bg-white disabled:opacity-30"
+                className="rounded-md p-1.5 text-slate-500 hover:bg-white hover:text-slate-700 disabled:opacity-30 dark:text-slate-400 dark:hover:bg-slate-700/60 dark:hover:text-slate-200"
                 aria-label="Turunkan urutan"
               >
                 <ArrowDown size={15} />
@@ -81,7 +84,7 @@ export default function RepeatableList<T>({
               <button
                 type="button"
                 onClick={() => removeAt(index)}
-                className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                className="rounded-md p-1.5 text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
                 aria-label="Hapus butir"
               >
                 <Trash2 size={15} />

@@ -44,11 +44,11 @@ export default function RegisterForm() {
   return (
     <div className="w-full max-w-md">
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 text-white">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
           <span className="text-xl font-bold">R</span>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Buat Akun</h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Buat Akun</h1>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Daftar untuk mulai mengajukan reimbursement
         </p>
       </div>
@@ -103,18 +103,20 @@ export default function RegisterForm() {
             />
             <button
               type="button"
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <p className="mt-1 text-xs text-slate-500">Minimal 8 karakter.</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Minimal 8 karakter.</p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 dark:border dark:border-rose-800/40">
+            {error}
+          </div>
         )}
 
         <button type="submit" disabled={loading} className="btn-primary w-full">
@@ -122,9 +124,9 @@ export default function RegisterForm() {
           {loading ? 'Memproses...' : 'Daftar'}
         </button>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Sudah punya akun?{' '}
-          <a href="/login" className="font-medium text-brand-600 hover:text-brand-700">
+          <a href="/login" className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
             Masuk di sini
           </a>
         </p>

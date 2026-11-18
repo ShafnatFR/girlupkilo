@@ -89,7 +89,9 @@ export default function NewSubmissionForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Informasi Pengajuan</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-200">
+          Informasi Pengajuan
+        </h2>
 
         <div className="space-y-4">
           <div>
@@ -179,7 +181,7 @@ export default function NewSubmissionForm() {
             <label className="label">Bukti Pengeluaran (Opsional)</label>
             <div className="mt-1 flex items-center gap-4">
               {uploaded ? (
-                <div className="flex items-center gap-2 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+                <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border dark:border-emerald-800/40">
                   <Upload size={16} />
                   <a href={uploaded.url} target="_blank" rel="noreferrer" className="underline">
                     {uploaded.name}
@@ -188,12 +190,13 @@ export default function NewSubmissionForm() {
                     type="button"
                     onClick={() => setUploaded(null)}
                     aria-label="Hapus bukti"
+                    className="hover:text-emerald-900 dark:hover:text-emerald-100"
                   >
                     <X size={16} />
                   </button>
                 </div>
               ) : (
-                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm text-slate-600 hover:border-brand-500 hover:text-brand-600">
+                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm text-slate-600 hover:border-brand-500 hover:text-brand-600 dark:border-slate-700 dark:text-slate-400 dark:hover:border-brand-400 dark:hover:text-brand-300">
                   <Upload size={16} />
                   {uploading ? 'Mengunggah...' : 'Pilih File'}
                   <input
@@ -205,13 +208,19 @@ export default function NewSubmissionForm() {
                   />
                 </label>
               )}
-              <span className="text-xs text-slate-500">PNG, JPG, WEBP, GIF, atau PDF. Maks 10 MB.</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                PNG, JPG, WEBP, GIF, atau PDF. Maks 10 MB.
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">{error}</div>}
+      {error && (
+        <div className="rounded-lg bg-rose-50 p-4 text-sm text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 dark:border dark:border-rose-800/40">
+          {error}
+        </div>
+      )}
 
       <div className="flex gap-3">
         <button type="button" onClick={() => router.back()} className="btn-secondary">

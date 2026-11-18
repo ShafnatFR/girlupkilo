@@ -45,8 +45,8 @@ export default function LoginForm() {
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 text-white">
           <span className="text-xl font-bold">R</span>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Selamat Datang</h1>
-        <p className="mt-2 text-sm text-slate-500">Masuk ke akun Reimburse Anda</p>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Selamat Datang</h1>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Masuk ke akun Reimburse Anda</p>
       </div>
 
       <form onSubmit={handleSubmit} className="card space-y-4 p-6">
@@ -83,7 +83,7 @@ export default function LoginForm() {
             />
             <button
               type="button"
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
             >
@@ -93,7 +93,7 @@ export default function LoginForm() {
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">{error}</div>
         )}
 
         <button type="submit" disabled={loading} className="btn-primary w-full">
@@ -101,9 +101,9 @@ export default function LoginForm() {
           {loading ? 'Memproses...' : 'Masuk'}
         </button>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Belum punya akun?{' '}
-          <a href="/register" className="font-medium text-brand-600 hover:text-brand-700">
+          <a href="/register" className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
             Daftar di sini
           </a>
         </p>

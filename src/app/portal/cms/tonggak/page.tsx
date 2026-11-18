@@ -51,13 +51,13 @@ export default async function CmsMilestonesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
+        <p className="text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">
           CMS
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-900">
+        <h1 className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">
           Tonggak Waktu
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Perjalanan organisasi yang tampil pada bagian "Perjalanan" di
           halaman beranda.
         </p>

@@ -207,8 +207,8 @@ export default function EntityManager({
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">{plural}</h2>
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">{plural}</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
         </div>
         <button onClick={startCreate} className="btn-primary shrink-0">
           <Plus size={16} />
@@ -217,7 +217,7 @@ export default function EntityManager({
       </div>
 
       {error && !open && !confirming && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 dark:border dark:border-rose-800/40">
           {error}
         </div>
       )}
@@ -225,36 +225,36 @@ export default function EntityManager({
       {/* Tabel */}
       <div className="card overflow-hidden">
         {rows.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-slate-500">
+          <div className="px-6 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
             Belum ada data {plural.toLowerCase()}.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b bg-slate-50">
+              <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-700/60 dark:bg-slate-800/60">
                 <tr>
                   {columns.map((column) => (
                     <th
                       key={column.key}
-                      className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 ${
+                      className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 ${
                         column.className ?? ''
                       }`}
                     >
                       {column.label}
                     </th>
                   ))}
-                  <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Aksi
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                 {rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-slate-50/70">
+                  <tr key={row.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-700/20">
                     {columns.map((column) => (
                       <td
                         key={column.key}
-                        className={`px-4 py-3 align-top text-slate-700 ${
+                        className={`px-4 py-3 align-top text-slate-700 dark:text-slate-300 ${
                           column.className ?? ''
                         }`}
                       >
@@ -267,14 +267,14 @@ export default function EntityManager({
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => startEdit(row)}
-                          className="rounded-md p-2 text-slate-500 transition-colors hover:bg-brand-50 hover:text-brand-700"
+                          className="rounded-md p-2 text-slate-500 transition-colors hover:bg-brand-50 hover:text-brand-700 dark:text-slate-400 dark:hover:bg-brand-950/40 dark:hover:text-brand-300"
                           aria-label={`Ubah ${singular}`}
                         >
                           <Pencil size={15} />
                         </button>
                         <button
                           onClick={() => setConfirming(row)}
-                          className="rounded-md p-2 text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                          className="rounded-md p-2 text-slate-500 transition-colors hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
                           aria-label={`Hapus ${singular}`}
                         >
                           <Trash2 size={15} />
@@ -291,19 +291,19 @@ export default function EntityManager({
 
       {/* Form */}
       {open && (
-        <div className="card border-brand-200 p-6">
+        <div className="card border-brand-200 p-6 dark:border-brand-800/40">
           <div className="mb-5 flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-semibold text-slate-900">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200">
                 {editing ? `Ubah ${singular}` : `Tambah ${singular}`}
               </h3>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Kolom bertanda * wajib diisi.
               </p>
             </div>
             <button
               onClick={closeForm}
-              className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
               aria-label="Tutup"
             >
               <X size={18} />
@@ -319,7 +319,7 @@ export default function EntityManager({
                   return (
                     <label
                       key={field.name}
-                      className={`flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 ${
+                      className={`flex items-center gap-3 rounded-lg border border-slate-200 bg-white/50 px-4 py-3 dark:border-slate-700/60 dark:bg-slate-800/40 ${
                         field.full ? 'sm:col-span-2' : ''
                       }`}
                     >
@@ -327,14 +327,14 @@ export default function EntityManager({
                         type="checkbox"
                         checked={Boolean(value)}
                         onChange={(e) => update(field.name, e.target.checked)}
-                        className="h-4 w-4 rounded border-slate-300 text-brand-600"
+                        className="h-4 w-4 rounded border-slate-300 text-brand-600 dark:border-slate-600 dark:bg-slate-700"
                       />
                       <span className="text-sm">
-                        <span className="font-medium text-slate-800">
+                        <span className="font-medium text-slate-800 dark:text-slate-200">
                           {field.label}
                         </span>
                         {field.hint && (
-                          <span className="ml-2 text-xs text-slate-500">
+                          <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
                             {field.hint}
                           </span>
                         )}
@@ -470,15 +470,15 @@ export default function EntityManager({
 
       {/* Konfirmasi hapus */}
       {confirming && (
-        <div className="card border-red-200 bg-red-50/60 p-5">
-          <h3 className="font-semibold text-red-900">
+        <div className="card border-rose-200 bg-rose-50/60 p-5 dark:border-rose-800/40 dark:bg-rose-950/20">
+          <h3 className="font-semibold text-rose-900 dark:text-rose-200">
             Hapus {singular} ini?
           </h3>
-          <p className="mt-1 text-sm text-red-700">
+          <p className="mt-1 text-sm text-rose-700 dark:text-rose-300">
             Data yang sudah dihapus tidak dapat dikembalikan.
           </p>
 
-          {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
+          {error && <p className="mt-3 text-sm text-rose-700 dark:text-rose-300">{error}</p>}
 
           <div className="mt-4 flex gap-2">
             <button

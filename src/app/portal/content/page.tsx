@@ -66,10 +66,10 @@ export default async function ContentOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
           Konten — Acara, Artikel & Publikasi
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Kelola modul konten publik: acara, dokumentasi, artikel, dan
           e-magazine. Perubahan langsung tampil setelah disimpan.
         </p>
@@ -82,19 +82,19 @@ export default async function ContentOverviewPage() {
             <Link
               key={card.href}
               href={card.href}
-              className="group card flex flex-col p-5 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+              className="group card flex flex-col p-5 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700/50"
             >
               <div className="flex items-center justify-between">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400 dark:group-hover:bg-brand-900/40">
                   <Icon size={19} />
                 </span>
-                <span className="text-xs text-slate-400">{card.meta}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">{card.meta}</span>
               </div>
-              <h2 className="mt-4 font-semibold text-slate-900">{card.title}</h2>
-              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500">
+              <h2 className="mt-4 font-semibold text-slate-800 dark:text-slate-200">{card.title}</h2>
+              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                 {card.description}
               </p>
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-brand-600">
+              <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-brand-600 dark:text-brand-400">
                 Kelola
                 <ArrowRight size={13} />
               </span>

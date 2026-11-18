@@ -41,8 +41,8 @@ export default function HomeContentForm({
   return (
     <div className="space-y-5">
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Statistik</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Statistik</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Angka yang tampil pada bagian statistik di bawah hero halaman beranda.
         </p>
 
@@ -94,8 +94,8 @@ export default function HomeContentForm({
       </section>
 
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Alur bergabung</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Alur bergabung</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Langkah-langkah yang tampil pada halaman Departemen.
         </p>
 

@@ -58,8 +58,8 @@ export default function VisionMissionForm({
     <div className="space-y-5">
       {/* Visi */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Visi</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Visi</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Pernyataan utama yang tampil besar pada halaman Visi &amp; Misi.
         </p>
 
@@ -99,8 +99,8 @@ export default function VisionMissionForm({
 
       {/* Misi */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Misi</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Misi</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Daftar misi yang tampil sebagai butir bernomor.
         </p>
 
@@ -140,8 +140,8 @@ export default function VisionMissionForm({
 
       {/* Nilai */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Nilai inti</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Nilai inti</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Empat nilai yang menjadi kompas organisasi.
         </p>
 
@@ -191,8 +191,8 @@ export default function VisionMissionForm({
 
       {/* Pilar */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Pilar</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Pilar</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Empat pilar kerja Girl Up yang tampil pada halaman beranda.
         </p>
 

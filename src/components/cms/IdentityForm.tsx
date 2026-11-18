@@ -83,8 +83,8 @@ export default function IdentityForm({ identity, contact, about }: IdentityFormP
     <div className="space-y-5">
       {/* Identitas */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Identitas organisasi</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Identitas organisasi</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Dipakai pada navbar, footer, dan metadata halaman.
         </p>
 
@@ -198,8 +198,8 @@ export default function IdentityForm({ identity, contact, about }: IdentityFormP
 
       {/* Kontak */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Tautan & kontak</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Tautan & kontak</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Tampil pada bagian ikon sosial di footer.
         </p>
 
@@ -265,8 +265,8 @@ export default function IdentityForm({ identity, contact, about }: IdentityFormP
 
       {/* Tentang */}
       <section className="card p-6">
-        <h2 className="font-semibold text-slate-900">Bagian &ldquo;Tentang&rdquo;</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-semibold text-slate-800 dark:text-slate-200">Bagian &ldquo;Tentang&rdquo;</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Narasi latar belakang Girl Up pada halaman beranda.
         </p>
 

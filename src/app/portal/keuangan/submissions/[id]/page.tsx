@@ -20,12 +20,17 @@ export default async function SubmissionDetailPage({
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/portal/keuangan/submissions" className="rounded-lg p-2 hover:bg-slate-100">
+        <Link
+          href="/portal/keuangan/submissions"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+        >
           <ArrowLeft size={20} />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{item.title}</h1>
-          <p className="mt-1 text-sm text-slate-500">Diajukan pada {formatDate(item.created_at)}</p>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">{item.title}</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Diajukan pada {formatDate(item.created_at)}
+          </p>
         </div>
         <span className={`badge ${STATUS_STYLES[item.status]}`}>{STATUS_LABELS[item.status]}</span>
       </div>
@@ -33,40 +38,44 @@ export default async function SubmissionDetailPage({
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <div className="card p-6">
-            <h2 className="mb-4 font-semibold text-slate-900">Detail Pengajuan</h2>
+            <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">
+              Detail Pengajuan
+            </h2>
             <dl className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <dt className="text-sm text-slate-500">Kategori</dt>
-                  <dd className="mt-1 font-medium capitalize text-slate-900">
+                  <dt className="text-sm text-slate-500 dark:text-slate-400">Kategori</dt>
+                  <dd className="mt-1 font-medium capitalize text-slate-800 dark:text-slate-200">
                     {item.category.replace('_', ' ')}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-slate-500">Tanggal Pengeluaran</dt>
-                  <dd className="mt-1 font-medium text-slate-900">
+                  <dt className="text-sm text-slate-500 dark:text-slate-400">Tanggal Pengeluaran</dt>
+                  <dd className="mt-1 font-medium text-slate-800 dark:text-slate-200">
                     {formatDate(item.expense_date)}
                   </dd>
                 </div>
               </div>
 
               <div>
-                <dt className="text-sm text-slate-500">Jumlah</dt>
-                <dd className="mt-1 text-2xl font-bold text-slate-900">
+                <dt className="text-sm text-slate-500 dark:text-slate-400">Jumlah</dt>
+                <dd className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">
                   {formatCurrency(Number(item.amount))}
                 </dd>
               </div>
 
               {item.description && (
                 <div>
-                  <dt className="text-sm text-slate-500">Deskripsi</dt>
-                  <dd className="mt-1 text-sm text-slate-700">{item.description}</dd>
+                  <dt className="text-sm text-slate-500 dark:text-slate-400">Deskripsi</dt>
+                  <dd className="mt-1 text-sm text-slate-700 dark:text-slate-300">
+                    {item.description}
+                  </dd>
                 </div>
               )}
 
               {item.receipt_url && (
                 <div>
-                  <dt className="mb-2 text-sm text-slate-500">Bukti Pengeluaran</dt>
+                  <dt className="mb-2 text-sm text-slate-500 dark:text-slate-400">Bukti Pengeluaran</dt>
                   <dd>
                     <a
                       href={item.receipt_url}
@@ -84,7 +93,9 @@ export default async function SubmissionDetailPage({
           </div>
 
           <div className="card p-6">
-            <h2 className="mb-4 font-semibold text-slate-900">Riwayat Persetujuan</h2>
+            <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">
+              Riwayat Persetujuan
+            </h2>
             <div className="space-y-4">
               <TimelineItem
                 title="Pengajuan Dibuat"
@@ -123,13 +134,15 @@ export default async function SubmissionDetailPage({
               )}
 
               {item.status === 'rejected' && (
-                <div className="rounded-lg bg-red-50 p-4">
+                <div className="rounded-lg bg-rose-50 p-4 dark:bg-rose-950/40 dark:border dark:border-rose-800/40">
                   <div className="flex items-start gap-3">
-                    <X className="mt-0.5 h-5 w-5 text-red-600" />
+                    <X className="mt-0.5 h-5 w-5 text-rose-600 dark:text-rose-400" />
                     <div>
-                      <p className="font-medium text-red-900">Pengajuan Ditolak</p>
+                      <p className="font-medium text-rose-900 dark:text-rose-200">Pengajuan Ditolak</p>
                       {item.rejection_reason && (
-                        <p className="mt-1 text-sm text-red-700">{item.rejection_reason}</p>
+                        <p className="mt-1 text-sm text-rose-700 dark:text-rose-300">
+                          {item.rejection_reason}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -141,12 +154,16 @@ export default async function SubmissionDetailPage({
 
         <div className="space-y-4">
           <div className="card p-6">
-            <h3 className="mb-4 font-semibold text-slate-900">Status Pengajuan</h3>
+            <h3 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">
+              Status Pengajuan
+            </h3>
             <div className="space-y-3">
               <span className={`badge ${STATUS_STYLES[item.status]}`}>
                 {STATUS_LABELS[item.status]}
               </span>
-              <p className="text-sm text-slate-600">{getStatusDescription(item.status)}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                {getStatusDescription(item.status)}
+              </p>
             </div>
           </div>
         </div>
@@ -171,18 +188,22 @@ function TimelineItem({
       <div className="flex flex-col items-center">
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full ${
-            status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
+            status === 'completed'
+              ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 dark:border dark:border-emerald-800/40'
+              : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
           }`}
         >
           {status === 'completed' ? <CheckCircle size={18} /> : <Clock size={18} />}
         </div>
-        {status === 'pending' && <div className="h-full w-0.5 bg-slate-200" />}
+        {status === 'pending' && (
+          <div className="h-full w-0.5 bg-slate-200 dark:bg-slate-700" />
+        )}
       </div>
       <div className="pb-4">
-        <p className="font-medium text-slate-900">{title}</p>
-        <p className="text-sm text-slate-500">{description}</p>
+        <p className="font-medium text-slate-800 dark:text-slate-200">{title}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
         {status === 'completed' && date && (
-          <p className="mt-1 text-xs text-slate-400">{formatDate(date)}</p>
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{formatDate(date)}</p>
         )}
       </div>
     </div>

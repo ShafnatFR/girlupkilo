@@ -79,11 +79,11 @@ export default async function ContentArticlesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
+        <p className="text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">
           Konten
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-900">Artikel</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">Artikel</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Mengelola artikel yang tampil pada halaman Artikel publik.
         </p>
       </div>

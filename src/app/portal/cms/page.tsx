@@ -101,15 +101,15 @@ export default async function CmsOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">CMS Konten</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">CMS Konten</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Kelola seluruh teks halaman publik tanpa mengubah kode. Perubahan
           langsung tampil setelah disimpan.
         </p>
       </div>
 
-      <div className="rounded-xl border border-brand-200 bg-brand-50/60 px-5 py-4">
-        <p className="text-sm text-brand-900">
+      <div className="rounded-xl border border-brand-200 bg-brand-50/60 px-5 py-4 dark:border-brand-800/40 dark:bg-brand-900/20">
+        <p className="text-sm text-brand-800 dark:text-brand-300">
           <strong>Cara kerja:</strong> halaman publik membaca data dari sini
           terlebih dahulu. Bila sebuah bagian belum diisi, sistem memakai nilai
           default dari kode, sehingga halaman tidak pernah kosong.
@@ -123,19 +123,19 @@ export default async function CmsOverviewPage() {
             <Link
               key={card.href}
               href={card.href}
-              className="group card flex flex-col p-5 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+              className="group card flex flex-col p-5 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700/50"
             >
               <div className="flex items-center justify-between">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400 dark:group-hover:bg-brand-900/40">
                   <Icon size={19} />
                 </span>
-                <span className="text-xs text-slate-400">{card.meta}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">{card.meta}</span>
               </div>
-              <h2 className="mt-4 font-semibold text-slate-900">{card.title}</h2>
-              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500">
+              <h2 className="mt-4 font-semibold text-slate-800 dark:text-slate-200">{card.title}</h2>
+              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                 {card.description}
               </p>
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-brand-600">
+              <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-brand-600 dark:text-brand-400">
                 Kelola
                 <ArrowRight size={13} />
               </span>
@@ -145,8 +145,8 @@ export default async function CmsOverviewPage() {
       </div>
 
       <div className="card p-5">
-        <h2 className="flex items-center gap-2 font-semibold text-slate-900">
-          <Home size={17} className="text-slate-400" />
+        <h2 className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
+          <Home size={17} className="text-slate-400 dark:text-slate-500" />
           Pratinjau halaman publik
         </h2>
         <div className="mt-3 flex flex-wrap gap-2">

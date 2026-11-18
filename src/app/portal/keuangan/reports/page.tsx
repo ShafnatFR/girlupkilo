@@ -44,8 +44,8 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Laporan</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Laporan</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Statistik dan analisis reimbursement
           {['manager', 'finance', 'admin'].includes(profile.role) ? ' seluruh perusahaan' : ' Anda'}
         </p>
@@ -53,46 +53,46 @@ export default async function ReportsPage() {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="card p-6">
-          <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-2 text-blue-600">
+          <div className="mb-4 inline-flex rounded-lg bg-blue-100 p-2 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
             <DollarSign size={20} />
           </div>
-          <p className="text-sm text-slate-500">Total Diajukan</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900">{formatCurrency(totalAmount)}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Total Diajukan</p>
+          <p className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">{formatCurrency(totalAmount)}</p>
         </div>
         <div className="card p-6">
-          <div className="mb-4 inline-flex rounded-lg bg-green-100 p-2 text-green-600">
+          <div className="mb-4 inline-flex rounded-lg bg-green-100 p-2 text-green-600 dark:bg-green-900/30 dark:text-green-400">
             <CheckCircle size={20} />
           </div>
-          <p className="text-sm text-slate-500">Sudah Dibayar</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900">{formatCurrency(paidAmount)}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Sudah Dibayar</p>
+          <p className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">{formatCurrency(paidAmount)}</p>
         </div>
         <div className="card p-6">
-          <div className="mb-4 inline-flex rounded-lg bg-yellow-100 p-2 text-yellow-600">
+          <div className="mb-4 inline-flex rounded-lg bg-yellow-100 p-2 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
             <Clock size={20} />
           </div>
-          <p className="text-sm text-slate-500">Menunggu Persetujuan</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900">{formatCurrency(pendingAmount)}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Menunggu Persetujuan</p>
+          <p className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">{formatCurrency(pendingAmount)}</p>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="card p-6">
-          <h2 className="mb-4 font-semibold text-slate-900">Pengeluaran per Kategori</h2>
+          <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">Pengeluaran per Kategori</h2>
           <div className="space-y-4">
             {Object.entries(byCategory).length === 0 && (
-              <p className="text-sm text-slate-500">Belum ada data</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Belum ada data</p>
             )}
             {Object.entries(byCategory).map(([category, amount]) => {
               const percentage = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
               return (
                 <div key={category}>
                   <div className="mb-1 flex items-center justify-between">
-                    <span className="text-sm font-medium capitalize text-slate-700">
+                    <span className="text-sm font-medium capitalize text-slate-700 dark:text-slate-300">
                       {category.replace('_', ' ')}
                     </span>
-                    <span className="text-sm text-slate-500">{formatCurrency(amount)}</span>
+                    <span className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(amount)}</span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700/40">
                     <div
                       className="h-full rounded-full bg-brand-500"
                       style={{ width: `${percentage}%` }}
@@ -105,30 +105,30 @@ export default async function ReportsPage() {
         </div>
 
         <div className="card p-6">
-          <h2 className="mb-4 font-semibold text-slate-900">Pengajuan per Status</h2>
+          <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">Pengajuan per Status</h2>
           <div className="space-y-3">
             {Object.entries(byStatus).length === 0 && (
-              <p className="text-sm text-slate-500">Belum ada data</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Belum ada data</p>
             )}
             {Object.entries(byStatus).map(([status, count]) => (
               <div
                 key={status}
-                className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"
+                className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3 dark:bg-slate-700/30"
               >
-                <span className="text-sm font-medium text-slate-700">
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   {STATUS_LABELS[status as keyof typeof STATUS_LABELS]}
                 </span>
-                <span className="text-lg font-bold text-slate-900">{count}</span>
+                <span className="text-lg font-bold text-slate-800 dark:text-slate-200">{count}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 font-semibold text-slate-900">Tren Pengeluaran per Bulan</h2>
+          <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">Tren Pengeluaran per Bulan</h2>
           <div className="space-y-3">
             {Object.entries(byMonth).length === 0 && (
-              <p className="text-sm text-slate-500">Belum ada data</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Belum ada data</p>
             )}
             {Object.entries(byMonth)
               .sort(([a], [b]) => a.localeCompare(b))
@@ -138,15 +138,15 @@ export default async function ReportsPage() {
                 return (
                   <div key={month}>
                     <div className="mb-1 flex items-center justify-between">
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                         {new Date(month + '-01').toLocaleDateString('id-ID', {
                           month: 'long',
                           year: 'numeric',
                         })}
                       </span>
-                      <span className="text-sm text-slate-500">{formatCurrency(amount)}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(amount)}</span>
                     </div>
-                    <div className="h-4 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-4 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700/40">
                       <div
                         className="h-full rounded-full bg-brand-500"
                         style={{ width: `${percentage}%` }}
@@ -160,45 +160,45 @@ export default async function ReportsPage() {
       </div>
 
       <div className="card">
-        <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-slate-900">Ringkasan Pengajuan Terbaru</h2>
+        <div className="border-b border-slate-200 px-6 py-4 dark:border-slate-700/60">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200">Ringkasan Pengajuan Terbaru</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b bg-slate-50">
+            <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-700/60 dark:bg-slate-700/30">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Tanggal
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Judul
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Kategori
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Jumlah
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700/60">
               {all.slice(0, 10).map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
+                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/20">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                     {new Date(item.expense_date).toLocaleDateString('id-ID')}
                   </td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{item.title}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-slate-600">
+                  <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">{item.title}</td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-slate-600 dark:text-slate-400">
                     {item.category.replace('_', ' ')}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-800 dark:text-slate-200">
                     {formatCurrency(Number(item.amount))}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <span className="badge bg-slate-100 text-slate-700">
+                    <span className="badge bg-slate-100 text-slate-700 dark:bg-slate-700/40 dark:text-slate-300">
                       {STATUS_LABELS[item.status]}
                     </span>
                   </td>

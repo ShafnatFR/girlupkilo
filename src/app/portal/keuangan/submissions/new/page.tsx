@@ -7,8 +7,10 @@ export default async function NewSubmissionPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Buat Pengajuan Baru</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+          Buat Pengajuan Baru
+        </h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Isi detail reimbursement yang ingin diajukan
         </p>
       </div>

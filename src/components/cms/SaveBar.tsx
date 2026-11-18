@@ -19,11 +19,11 @@ export default function SaveBar({
   onReset,
 }: SaveBarProps) {
   return (
-    <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 dark:border-slate-700/60 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-h-[1.25rem] text-sm">
-        {error && <span className="text-red-600">{error}</span>}
+        {error && <span className="text-rose-600 dark:text-rose-400">{error}</span>}
         {!error && saved && (
-          <span className="inline-flex items-center gap-1.5 text-green-700">
+          <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 size={15} />
             Perubahan disimpan
           </span>
