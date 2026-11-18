@@ -6,7 +6,9 @@
 CREATE TABLE IF NOT EXISTS public.users (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email         TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
+  password_hash TEXT,                       -- NULL = akun hanya bisa masuk lewat Google
+  google_sub    TEXT,                       -- ID akun Google (OAuth `sub`)
+  avatar_url    TEXT,
   full_name     TEXT NOT NULL DEFAULT '',
   role          TEXT NOT NULL DEFAULT 'staff'
                 CHECK (role IN ('staff', 'manager', 'finance', 'admin')),
@@ -16,6 +18,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON public.users (lower(email));
+CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_idx ON public.users (google_sub);
 
 CREATE TABLE IF NOT EXISTS public.sessions (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -6,7 +6,7 @@ import { isValidEmail } from '@/lib/validation';
 import type { Profile } from '@/lib/types';
 
 interface UserRow extends Profile {
-  password_hash: string;
+  password_hash: string | null;
 }
 
 export async function POST(request: Request) {
@@ -36,8 +36,12 @@ export async function POST(request: Request) {
   }
 
   // Pesan error disamakan agar tidak membocorkan email mana yang terdaftar.
-  if (!user || !verifyPassword(password, user.password_hash)) {
-    return NextResponse.json({ error: 'Email atau password salah' }, { status: 401 });
+  // password_hash NULL berarti akun dibuat lewat Google, jadi tidak bisa login password.
+  if (!user || !user.password_hash || !verifyPassword(password, user.password_hash)) {
+    return NextResponse.json(
+      { error: 'Email atau password salah. Kalau akunmu dibuat lewat Google, pakai tombol "Masuk dengan Google".' },
+      { status: 401 }
+    );
   }
 
   await createSession(user.id);

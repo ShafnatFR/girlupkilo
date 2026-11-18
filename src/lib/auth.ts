@@ -46,7 +46,24 @@ function hashToken(token: string): string {
 
 // ---------------------------------------------------------------- session
 
-export async function createSession(userId: string): Promise<void> {
+export interface SessionCookie {
+  name: string;
+  value: string;
+  options: {
+    httpOnly: true;
+    sameSite: 'lax';
+    secure: boolean;
+    path: string;
+    expires: Date;
+  };
+}
+
+/**
+ * Buat sesi di database dan kembalikan cookie-nya tanpa memasangnya.
+ * Dipakai route handler yang ingin memasang cookie langsung ke response
+ * (mis. callback OAuth yang juga harus menghapus cookie state).
+ */
+export async function issueSession(userId: string): Promise<SessionCookie> {
   const token = crypto.randomBytes(32).toString('base64url');
   const expiresAt = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
 
@@ -55,14 +72,24 @@ export async function createSession(userId: string): Promise<void> {
     [userId, hashToken(token), expiresAt]
   );
 
+  return {
+    name: SESSION_COOKIE,
+    value: token,
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: useSecureCookies(),
+      path: '/',
+      expires: expiresAt,
+    },
+  };
+}
+
+export async function createSession(userId: string): Promise<void> {
+  const session = await issueSession(userId);
+
   const jar = await cookies();
-  jar.set(SESSION_COOKIE, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: useSecureCookies(),
-    path: '/',
-    expires: expiresAt,
-  });
+  jar.set(session.name, session.value, session.options);
 }
 
 export async function destroySession(): Promise<void> {

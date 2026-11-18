@@ -24,9 +24,19 @@ export async function POST(request: Request) {
   }
 
   try {
-    const existing = await queryOne('SELECT 1 FROM public.users WHERE lower(email) = $1', [email]);
+    const existing = await queryOne<{ google_sub: string | null }>(
+      'SELECT google_sub FROM public.users WHERE lower(email) = $1',
+      [email]
+    );
     if (existing) {
-      return NextResponse.json({ error: 'Email sudah terdaftar' }, { status: 409 });
+      return NextResponse.json(
+        {
+          error: existing.google_sub
+            ? 'Email ini sudah terdaftar lewat Google. Pakai tombol "Masuk dengan Google".'
+            : 'Email sudah terdaftar',
+        },
+        { status: 409 }
+      );
     }
 
     const rows = await query<{ id: string }>(

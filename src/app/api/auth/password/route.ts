@@ -22,11 +22,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Password baru minimal 8 karakter' }, { status: 400 });
   }
 
-  const row = await queryOne<{ password_hash: string }>(
+  const row = await queryOne<{ password_hash: string | null }>(
     'SELECT password_hash FROM public.users WHERE id = $1',
     [user.id]
   );
-  if (!row || !verifyPassword(currentPassword, row.password_hash)) {
+  if (!row) return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 });
+  if (!row.password_hash) {
+    return NextResponse.json(
+      { error: 'Akun ini masuk lewat Google dan belum punya password lokal.' },
+      { status: 400 }
+    );
+  }
+  if (!verifyPassword(currentPassword, row.password_hash)) {
     return NextResponse.json({ error: 'Password saat ini salah' }, { status: 400 });
   }
 

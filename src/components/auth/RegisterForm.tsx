@@ -4,14 +4,22 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-export default function RegisterForm() {
+import GoogleButton from '@/components/auth/GoogleButton';
+
+export default function RegisterForm({
+  googleEnabled = false,
+  initialError = '',
+}: {
+  googleEnabled?: boolean;
+  initialError?: string;
+}) {
   const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(initialError);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -121,6 +129,20 @@ export default function RegisterForm() {
           {loading && <Loader2 size={18} className="animate-spin" />}
           {loading ? 'Memproses...' : 'Daftar'}
         </button>
+
+        {googleEnabled && (
+          <>
+            <div className="flex items-center gap-3">
+              <span className="h-px flex-1 bg-slate-200" />
+              <span className="text-xs uppercase tracking-wide text-slate-400">atau</span>
+              <span className="h-px flex-1 bg-slate-200" />
+            </div>
+            <GoogleButton label="Daftar dengan Google" />
+            <p className="text-center text-xs text-slate-500">
+              Nama dan email diambil otomatis dari akun Google kamu.
+            </p>
+          </>
+        )}
 
         <p className="text-center text-sm text-slate-500">
           Sudah punya akun?{' '}
