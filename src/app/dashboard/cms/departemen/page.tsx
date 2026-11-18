@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
 
 import EntityManager, {
-  type ColumnDef,
-  type CmsRow,
   type FieldDef,
 } from '@/components/cms/EntityManager';
-import StatusBadge from '@/components/cms/StatusBadge';
 import { listDepartments } from '@/lib/cms/admin';
 import { ICON_CHOICES } from '@/lib/cms/icons';
 import { requireCmsPage } from '@/lib/cms/page-guard';
@@ -99,64 +96,6 @@ const FIELDS: FieldDef[] = [
   },
 ];
 
-const COLUMNS: ColumnDef[] = [
-  {
-    key: 'short_name',
-    label: 'Departemen',
-    render: (row: CmsRow) => (
-      <div>
-        <p className="font-medium text-slate-900">{String(row.short_name ?? '')}</p>
-        <p className="text-xs text-slate-500">{String(row.name ?? '')}</p>
-      </div>
-    ),
-  },
-  {
-    key: 'tagline',
-    label: 'Tagline',
-    className: 'max-w-xs',
-    render: (row: CmsRow) => (
-      <span className="line-clamp-2 text-xs text-slate-600">
-        {String(row.tagline ?? '—')}
-      </span>
-    ),
-  },
-  {
-    key: 'head_name',
-    label: 'Kepala / Wakil',
-    render: (row: CmsRow) => (
-      <div className="text-xs">
-        <p className="text-slate-700">{String(row.head_name ?? '—')}</p>
-        {row.deputy_name ? (
-          <p className="text-slate-500">Wakil: {String(row.deputy_name)}</p>
-        ) : null}
-      </div>
-    ),
-  },
-  {
-    key: 'member_count',
-    label: 'Anggota',
-    render: (row: CmsRow) => (
-      <span className="text-slate-600">
-        {row.member_count === null || row.member_count === undefined
-          ? '—'
-          : String(row.member_count)}
-      </span>
-    ),
-  },
-  {
-    key: 'sort_order',
-    label: 'Urutan',
-    render: (row: CmsRow) => (
-      <span className="text-slate-500">{String(row.sort_order ?? 0)}</span>
-    ),
-  },
-  {
-    key: 'published',
-    label: 'Status',
-    render: (row: CmsRow) => <StatusBadge published={row.published} />,
-  },
-];
-
 export default async function CmsDepartmentsPage() {
   await requireCmsPage();
   const departments = await listDepartments();
@@ -181,21 +120,6 @@ export default async function CmsDepartmentsPage() {
         description="Tambah, ubah, atau hapus departemen beserta fokus kerja dan pengurusnya."
         rows={departments}
         fields={FIELDS}
-        columns={COLUMNS}
-        makeEmpty={() => ({
-          slug: '',
-          name: '',
-          short_name: '',
-          tagline: '',
-          description: '',
-          focus: [],
-          icon: 'sprout',
-          head_name: '',
-          deputy_name: '',
-          member_count: '',
-          sort_order: departments.length + 1,
-          published: true,
-        })}
       />
     </div>
   );

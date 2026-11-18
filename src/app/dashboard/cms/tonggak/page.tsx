@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
 
 import EntityManager, {
-  type ColumnDef,
-  type CmsRow,
   type FieldDef,
 } from '@/components/cms/EntityManager';
-import StatusBadge from '@/components/cms/StatusBadge';
 import { listMilestones } from '@/lib/cms/admin';
 import { requireCmsPage } from '@/lib/cms/page-guard';
 
@@ -47,47 +44,6 @@ const FIELDS: FieldDef[] = [
   },
 ];
 
-const COLUMNS: ColumnDef[] = [
-  {
-    key: 'year',
-    label: 'Tahun',
-    render: (row: CmsRow) => (
-      <span className="badge bg-gu-50 text-gu-700">
-        {String(row.year ?? '')}
-      </span>
-    ),
-  },
-  {
-    key: 'title',
-    label: 'Judul',
-    render: (row: CmsRow) => (
-      <span className="font-medium text-slate-900">{String(row.title ?? '')}</span>
-    ),
-  },
-  {
-    key: 'description',
-    label: 'Deskripsi',
-    className: 'max-w-md',
-    render: (row: CmsRow) => (
-      <span className="line-clamp-2 text-xs text-slate-600">
-        {String(row.description || '—')}
-      </span>
-    ),
-  },
-  {
-    key: 'sort_order',
-    label: 'Urutan',
-    render: (row: CmsRow) => (
-      <span className="text-slate-500">{String(row.sort_order ?? 0)}</span>
-    ),
-  },
-  {
-    key: 'published',
-    label: 'Status',
-    render: (row: CmsRow) => <StatusBadge published={row.published} />,
-  },
-];
-
 export default async function CmsMilestonesPage() {
   await requireCmsPage();
   const milestones = await listMilestones();
@@ -114,14 +70,6 @@ export default async function CmsMilestonesPage() {
         description="Tambah, ubah, atau hapus tonggak perjalanan organisasi."
         rows={milestones}
         fields={FIELDS}
-        columns={COLUMNS}
-        makeEmpty={() => ({
-          year: '',
-          title: '',
-          description: '',
-          sort_order: milestones.length + 1,
-          published: true,
-        })}
       />
     </div>
   );

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { getColumnDefs, getMakeEmpty } from '@/lib/cms/column-defs';
 
 export type CmsRow = Record<string, unknown> & { id: string };
 
@@ -36,9 +37,6 @@ interface EntityManagerProps {
   description: string;
   rows: CmsRow[];
   fields: FieldDef[];
-  columns: ColumnDef[];
-  /** Nilai awal form untuk entri baru. */
-  makeEmpty: () => Record<string, unknown>;
 }
 
 function toFormValues(fields: FieldDef[], row?: CmsRow): Record<string, unknown> {
@@ -108,8 +106,6 @@ export default function EntityManager({
   description,
   rows,
   fields,
-  columns,
-  makeEmpty,
 }: EntityManagerProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -119,6 +115,9 @@ export default function EntityManager({
   const [error, setError] = useState('');
   const [confirming, setConfirming] = useState<CmsRow | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const columns = getColumnDefs(entity);
+  const makeEmpty = getMakeEmpty(entity);
 
   function startCreate() {
     setEditing(null);
