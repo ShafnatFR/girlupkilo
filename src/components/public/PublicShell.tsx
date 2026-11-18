@@ -16,8 +16,13 @@ export default async function PublicShell({
 }: {
   children: React.ReactNode;
 }) {
-  const jar = await cookies();
-  const isLoggedIn = Boolean(jar.get(SESSION_COOKIE)?.value);
+  let isLoggedIn = false;
+  try {
+    const jar = await cookies();
+    isLoggedIn = Boolean(jar.get(SESSION_COOKIE)?.value);
+  } catch {
+    // cookies() tidak tersedia di konteks render tertentu; treat sebagai tidak login
+  }
   const { site, contact } = await getPublicContent();
 
   return (
