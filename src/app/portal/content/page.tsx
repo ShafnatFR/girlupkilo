@@ -30,7 +30,7 @@ export default async function ContentOverviewPage() {
 
   const cards = [
     {
-      href: '/dashboard/content/acara',
+      href: '/portal/content/acara',
       title: 'Acara',
       description:
         'Daftar diskusi, kampanye, dan kegiatan yang tampil di halaman Acara publik.',
@@ -38,7 +38,7 @@ export default async function ContentOverviewPage() {
       meta: `${events.length} data`,
     },
     {
-      href: '/dashboard/content/dokumentasi',
+      href: '/portal/content/dokumentasi',
       title: 'Dokumentasi / Galeri',
       description:
         'Kumpulan foto dan dokumentasi kegiatan yang tampil di halaman Dokumentasi.',
@@ -46,7 +46,7 @@ export default async function ContentOverviewPage() {
       meta: `${gallery.length} data`,
     },
     {
-      href: '/dashboard/content/artikel',
+      href: '/portal/content/artikel',
       title: 'Artikel',
       description:
         'Esai, kajian, dan karya tulis anggota yang tampil di halaman Artikel.',
@@ -54,7 +54,7 @@ export default async function ContentOverviewPage() {
       meta: `${articles.length} data`,
     },
     {
-      href: '/dashboard/content/e-magazine',
+      href: '/portal/content/e-magazine',
       title: 'E-Magazine',
       description:
         'Terbitan digital e-magazine beserta tautan berkas untuk diunduh.',

@@ -31,7 +31,7 @@ export default function LoginForm() {
         return;
       }
 
-      router.replace('/dashboard');
+      router.replace('/portal');
       router.refresh();
     } catch {
       setError('Tidak dapat menghubungi server');

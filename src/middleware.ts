@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   const hasSession = Boolean(request.cookies.get(SESSION_COOKIE)?.value);
   const { pathname } = request.nextUrl;
 
-  if (!hasSession && pathname.startsWith('/dashboard')) {
+  if (!hasSession && pathname.startsWith('/portal')) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     url.search = '';
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
 
   if (hasSession && (pathname === '/login' || pathname === '/register')) {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = '/portal';
     url.search = '';
     return NextResponse.redirect(url);
   }
@@ -29,5 +29,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: ['/portal/:path*', '/login', '/register'],
 };

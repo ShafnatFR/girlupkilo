@@ -12,7 +12,7 @@ export default async function ApprovalDetailPage({
   const profile = await requireUser();
 
   if (!['manager', 'finance', 'admin'].includes(profile.role)) {
-    redirect('/dashboard');
+    redirect('/portal');
   }
 
   const item = await getReimbursementForUser(id, profile);

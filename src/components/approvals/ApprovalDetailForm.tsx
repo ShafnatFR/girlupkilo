@@ -44,7 +44,7 @@ export default function ApprovalDetailForm({
         return;
       }
 
-      router.push('/dashboard/approvals');
+      router.push('/portal/keuangan/approvals');
       router.refresh();
     } catch {
       setError('Tidak dapat menghubungi server');
@@ -67,7 +67,7 @@ export default function ApprovalDetailForm({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/approvals" className="rounded-lg p-2 hover:bg-slate-100">
+        <Link href="/portal/keuangan/approvals" className="rounded-lg p-2 hover:bg-slate-100">
           <ArrowLeft size={20} />
         </Link>
         <div className="flex-1">

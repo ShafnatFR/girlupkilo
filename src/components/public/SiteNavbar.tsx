@@ -66,7 +66,7 @@ export default function SiteNavbar({
         {/* Desktop CTA */}
         <div className="hidden items-center gap-2 md:flex">
           {isLoggedIn ? (
-            <Link href="/dashboard" className="btn-primary">
+            <Link href="/portal" className="btn-primary">
               <LayoutDashboard size={16} />
               Dashboard
             </Link>
@@ -118,7 +118,7 @@ export default function SiteNavbar({
           <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4">
             {isLoggedIn ? (
               <Link
-                href="/dashboard"
+                href="/portal"
                 onClick={() => setOpen(false)}
                 className="btn-primary w-full"
               >

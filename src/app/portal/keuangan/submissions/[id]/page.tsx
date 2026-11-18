@@ -20,7 +20,7 @@ export default async function SubmissionDetailPage({
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/submissions" className="rounded-lg p-2 hover:bg-slate-100">
+        <Link href="/portal/keuangan/submissions" className="rounded-lg p-2 hover:bg-slate-100">
           <ArrowLeft size={20} />
         </Link>
         <div className="flex-1">

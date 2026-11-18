@@ -12,6 +12,6 @@ import { CMS_ROLES } from '@/lib/cms/admin';
 export async function requireCmsPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
-  if (!CMS_ROLES.includes(user.role)) redirect('/dashboard');
+  if (!CMS_ROLES.includes(user.role)) redirect('/portal');
   return user;
 }

@@ -13,6 +13,6 @@ import { CONTENT_ROLES } from '@/lib/cms/admin';
 export async function requireContentPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
-  if (!CONTENT_ROLES.includes(user.role)) redirect('/dashboard');
+  if (!CONTENT_ROLES.includes(user.role)) redirect('/portal');
   return user;
 }

@@ -10,7 +10,7 @@ export default async function ApprovalsPage() {
   const profile = await requireUser();
 
   if (!['manager', 'finance', 'admin'].includes(profile.role)) {
-    redirect('/dashboard');
+    redirect('/portal');
   }
 
   const all = await listApprovals(profile.role);
@@ -100,7 +100,7 @@ function ApprovalItem({ item }: { item: ReimbursementWithProfile }) {
     <div className="flex items-center justify-between px-6 py-4">
       <div className="min-w-0 flex-1">
         <Link
-          href={`/dashboard/submissions/${item.id}`}
+          href={`/portal/keuangan/submissions/${item.id}`}
           className="font-medium text-slate-900 hover:text-brand-600"
         >
           {item.title}
@@ -117,7 +117,7 @@ function ApprovalItem({ item }: { item: ReimbursementWithProfile }) {
         </div>
       </div>
 
-      <Link href={`/dashboard/approvals/${item.id}`} className="btn-primary ml-4">
+      <Link href={`/portal/keuangan/approvals/${item.id}`} className="btn-primary ml-4">
         Tinjau
       </Link>
     </div>

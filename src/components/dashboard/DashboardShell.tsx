@@ -33,7 +33,7 @@ export default function DashboardShell({
   const pathname = usePathname();
   const module = resolveModule(pathname);
 
-  // Launcher (/dashboard): tanpa sidebar, konten selebar penuh.
+  // Launcher (/portal): tanpa sidebar, konten selebar penuh.
   if (!module) {
     return (
       <div className="min-h-screen bg-slate-50">
@@ -94,7 +94,7 @@ function ModuleLayout({
       >
         <div className="flex h-16 items-center justify-between border-b px-6">
           <Link
-            href="/dashboard"
+            href="/portal"
             className="flex items-center gap-2"
             onClick={() => setMobileOpen(false)}
           >
@@ -122,7 +122,7 @@ function ModuleLayout({
         {/* Kembali ke daftar modul */}
         <div className="border-b px-3 py-2">
           <Link
-            href="/dashboard"
+            href="/portal"
             onClick={() => setMobileOpen(false)}
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
           >

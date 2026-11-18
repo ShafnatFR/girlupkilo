@@ -78,7 +78,7 @@ export default function NewSubmissionForm() {
         return;
       }
 
-      router.push('/dashboard/submissions');
+      router.push('/portal/keuangan/submissions');
       router.refresh();
     } catch {
       setError('Tidak dapat menghubungi server');

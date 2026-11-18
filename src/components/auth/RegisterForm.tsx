@@ -33,7 +33,7 @@ export default function RegisterForm() {
       }
 
       // Registrasi langsung membuat sesi, jadi bisa masuk ke dashboard.
-      router.replace('/dashboard');
+      router.replace('/portal');
       router.refresh();
     } catch {
       setError('Tidak dapat menghubungi server');

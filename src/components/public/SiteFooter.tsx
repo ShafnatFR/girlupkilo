@@ -21,7 +21,7 @@ const LINK_GROUPS = [
     links: [
       { label: 'Masuk', href: '/login' },
       { label: 'Daftar', href: '/register' },
-      { label: 'Reimbursement', href: '/dashboard' },
+      { label: 'Reimbursement', href: '/portal' },
     ],
   },
 ];

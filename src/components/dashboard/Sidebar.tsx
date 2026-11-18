@@ -25,13 +25,13 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { href: '/dashboard', label: 'Ringkasan', icon: LayoutDashboard },
-  { href: '/dashboard/submissions', label: 'Pengajuan Saya', icon: FileText },
-  { href: '/dashboard/approvals', label: 'Persetujuan', icon: CheckSquare },
-  { href: '/dashboard/reports', label: 'Laporan', icon: BarChart3 },
-  { href: '/dashboard/content', label: 'Konten', icon: Images },
-  { href: '/dashboard/cms', label: 'CMS Konten', icon: Database },
-  { href: '/dashboard/settings', label: 'Pengaturan', icon: Settings },
+  { href: '/portal', label: 'Ringkasan', icon: LayoutDashboard },
+  { href: '/portal/keuangan/submissions', label: 'Pengajuan Saya', icon: FileText },
+  { href: '/portal/keuangan/approvals', label: 'Persetujuan', icon: CheckSquare },
+  { href: '/portal/keuangan/reports', label: 'Laporan', icon: BarChart3 },
+  { href: '/portal/content', label: 'Konten', icon: Images },
+  { href: '/portal/cms', label: 'CMS Konten', icon: Database },
+  { href: '/portal/settings', label: 'Pengaturan', icon: Settings },
 ];
 
 const CMS_ROLES = ['admin', 'manager'];
@@ -55,20 +55,20 @@ export default function Sidebar({ profile }: SidebarProps) {
 
   // Tampilkan menu sesuai peran pengguna.
   const visibleItems = navItems.filter((item) => {
-    if (item.href === '/dashboard/approvals') {
+    if (item.href === '/portal/keuangan/approvals') {
       return ['manager', 'finance', 'admin'].includes(profile.role);
     }
-    if (item.href === '/dashboard/cms') {
+    if (item.href === '/portal/cms') {
       return CMS_ROLES.includes(profile.role);
     }
-    if (item.href === '/dashboard/content') {
+    if (item.href === '/portal/content') {
       return CONTENT_ROLES.includes(profile.role);
     }
     return true;
   });
 
   const isActive = (href: string) =>
-    href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(href);
+    href === '/portal' ? pathname === '/portal' : pathname.startsWith(href);
 
   return (
     <>

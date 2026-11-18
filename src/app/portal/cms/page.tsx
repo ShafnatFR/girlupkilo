@@ -34,7 +34,7 @@ export default async function CmsOverviewPage() {
 
   const cards = [
     {
-      href: '/dashboard/cms/identitas',
+      href: '/portal/cms/identitas',
       title: 'Identitas & Kontak',
       description:
         'Nama organisasi, tagline, deskripsi, tautan sosial, dan bagian "Tentang Girl Up".',
@@ -42,7 +42,7 @@ export default async function CmsOverviewPage() {
       meta: '1 bagian',
     },
     {
-      href: '/dashboard/cms/visi-misi',
+      href: '/portal/cms/visi-misi',
       title: 'Visi & Misi',
       description:
         'Pernyataan visi, daftar misi, nilai inti, dan empat pilar Girl Up.',
@@ -50,7 +50,7 @@ export default async function CmsOverviewPage() {
       meta: '4 bagian',
     },
     {
-      href: '/dashboard/cms/beranda',
+      href: '/portal/cms/beranda',
       title: 'Konten Beranda',
       description:
         'Angka statistik pada beranda dan langkah-langkah alur bergabung.',
@@ -58,7 +58,7 @@ export default async function CmsOverviewPage() {
       meta: '2 bagian',
     },
     {
-      href: '/dashboard/cms/departemen',
+      href: '/portal/cms/departemen',
       title: 'Departemen',
       description:
         'Susunan departemen, fokus kerja, ikon, serta kepala dan wakil departemen.',
@@ -66,7 +66,7 @@ export default async function CmsOverviewPage() {
       meta: `${departments.length} data`,
     },
     {
-      href: '/dashboard/cms/pengurus',
+      href: '/portal/cms/pengurus',
       title: 'Pengurus',
       description:
         'Nama dan jabatan pengurus inti maupun kepala departemen.',
@@ -74,7 +74,7 @@ export default async function CmsOverviewPage() {
       meta: `${leaders.length} data`,
     },
     {
-      href: '/dashboard/cms/program',
+      href: '/portal/cms/program',
       title: 'Program Unggulan',
       description:
         'Program yang ditampilkan pada bagian "Program" di halaman beranda.',
@@ -82,14 +82,14 @@ export default async function CmsOverviewPage() {
       meta: `${programs.length} data`,
     },
     {
-      href: '/dashboard/cms/tonggak',
+      href: '/portal/cms/tonggak',
       title: 'Tonggak Waktu',
       description: 'Perjalanan organisasi dari tahun ke tahun.',
       icon: MilestoneIcon,
       meta: `${milestones.length} data`,
     },
     {
-      href: '/dashboard/cms/ikon',
+      href: '/portal/cms/ikon',
       title: 'Panduan Ikon',
       description:
         'Daftar ikon yang bisa dipilih untuk departemen dan program.',

@@ -3,7 +3,7 @@ import { FileQuestion, ArrowLeft } from 'lucide-react';
 
 /**
  * 404 khusus area dashboard — dipakai saat notFound() dipanggil di dalam
- * /dashboard/*, agar tetap tampil di dalam kerangka dashboard (sidebar),
+ * /portal/*, agar tetap tampil di dalam kerangka dashboard (sidebar),
  * bukan kerangka halaman publik.
  */
 export default function DashboardNotFound() {
@@ -22,11 +22,11 @@ export default function DashboardNotFound() {
       </p>
 
       <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-        <Link href="/dashboard/submissions" className="btn-primary">
+        <Link href="/portal/keuangan/submissions" className="btn-primary">
           <ArrowLeft size={16} />
           Daftar Pengajuan
         </Link>
-        <Link href="/dashboard" className="btn-secondary">
+        <Link href="/portal" className="btn-secondary">
           Ringkasan
         </Link>
       </div>

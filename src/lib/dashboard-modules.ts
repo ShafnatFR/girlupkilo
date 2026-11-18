@@ -64,26 +64,26 @@ export const DASHBOARD_MODULES: DashboardModule[] = [
     icon: Wallet,
     color: 'green',
     match: [
-      '/dashboard/submissions',
-      '/dashboard/approvals',
-      '/dashboard/reports',
+      '/portal/keuangan/submissions',
+      '/portal/keuangan/approvals',
+      '/portal/keuangan/reports',
     ],
-    home: '/dashboard/submissions',
+    home: '/portal/keuangan/submissions',
     items: [
       {
-        href: '/dashboard/submissions',
+        href: '/portal/keuangan/submissions',
         label: 'Pengajuan Saya',
         icon: FileText,
         overview: true,
       },
       {
-        href: '/dashboard/approvals',
+        href: '/portal/keuangan/approvals',
         label: 'Persetujuan',
         icon: CheckSquare,
         roles: ['manager', 'finance', 'admin'],
       },
       {
-        href: '/dashboard/reports',
+        href: '/portal/keuangan/reports',
         label: 'Laporan',
         icon: BarChart3,
       },
@@ -96,33 +96,33 @@ export const DASHBOARD_MODULES: DashboardModule[] = [
       'Kelola acara, dokumentasi, artikel, dan e-magazine yang tampil di situs publik.',
     icon: Images,
     color: 'gu',
-    match: ['/dashboard/content'],
-    home: '/dashboard/content',
+    match: ['/portal/content'],
+    home: '/portal/content',
     roles: CONTENT_ROLES,
     items: [
       {
-        href: '/dashboard/content',
+        href: '/portal/content',
         label: 'Ringkasan',
         icon: LayoutDashboard,
         overview: true,
       },
       {
-        href: '/dashboard/content/acara',
+        href: '/portal/content/acara',
         label: 'Acara',
         icon: CalendarDays,
       },
       {
-        href: '/dashboard/content/dokumentasi',
+        href: '/portal/content/dokumentasi',
         label: 'Dokumentasi',
         icon: ImageIcon,
       },
       {
-        href: '/dashboard/content/artikel',
+        href: '/portal/content/artikel',
         label: 'Artikel',
         icon: FileText,
       },
       {
-        href: '/dashboard/content/e-magazine',
+        href: '/portal/content/e-magazine',
         label: 'E-Magazine',
         icon: BookOpen,
       },
@@ -134,53 +134,53 @@ export const DASHBOARD_MODULES: DashboardModule[] = [
     description: 'Kelola seluruh teks halaman profil publik tanpa mengubah kode.',
     icon: Database,
     color: 'amber',
-    match: ['/dashboard/cms'],
-    home: '/dashboard/cms',
+    match: ['/portal/cms'],
+    home: '/portal/cms',
     roles: CMS_ROLES,
     items: [
       {
-        href: '/dashboard/cms',
+        href: '/portal/cms',
         label: 'Ringkasan',
         icon: LayoutDashboard,
         overview: true,
       },
       {
-        href: '/dashboard/cms/identitas',
+        href: '/portal/cms/identitas',
         label: 'Identitas & Kontak',
         icon: Home,
       },
       {
-        href: '/dashboard/cms/visi-misi',
+        href: '/portal/cms/visi-misi',
         label: 'Visi & Misi',
         icon: Target,
       },
       {
-        href: '/dashboard/cms/beranda',
+        href: '/portal/cms/beranda',
         label: 'Konten Beranda',
         icon: LayoutTemplate,
       },
       {
-        href: '/dashboard/cms/departemen',
+        href: '/portal/cms/departemen',
         label: 'Departemen',
         icon: Building2,
       },
       {
-        href: '/dashboard/cms/pengurus',
+        href: '/portal/cms/pengurus',
         label: 'Pengurus',
         icon: Users,
       },
       {
-        href: '/dashboard/cms/program',
+        href: '/portal/cms/program',
         label: 'Program Unggulan',
         icon: Flag,
       },
       {
-        href: '/dashboard/cms/tonggak',
+        href: '/portal/cms/tonggak',
         label: 'Tonggak Waktu',
         icon: Milestone,
       },
       {
-        href: '/dashboard/cms/ikon',
+        href: '/portal/cms/ikon',
         label: 'Panduan Ikon',
         icon: Palette,
       },
@@ -192,11 +192,11 @@ export const DASHBOARD_MODULES: DashboardModule[] = [
     description: 'Perbarui profil, kata sandi, dan preferensi akun Anda.',
     icon: Settings,
     color: 'slate',
-    match: ['/dashboard/settings'],
-    home: '/dashboard/settings',
+    match: ['/portal/settings'],
+    home: '/portal/settings',
     items: [
       {
-        href: '/dashboard/settings',
+        href: '/portal/settings',
         label: 'Pengaturan Akun',
         icon: Settings,
         overview: true,
@@ -211,8 +211,8 @@ export function rolesForModule(module: DashboardModule): string[] | undefined {
 
 /** Cari modul aktif berdasarkan pathname. Mengembalikan null bila di launcher. */
 export function resolveModule(pathname: string): DashboardModule | null {
-  // Launcher (/dashboard persis) tidak memiliki modul aktif.
-  if (pathname === '/dashboard' || pathname === '/dashboard/') return null;
+  // Launcher (/portal persis) tidak memiliki modul aktif.
+  if (pathname === '/portal' || pathname === '/portal/') return null;
 
   let best: DashboardModule | null = null;
   for (const mod of DASHBOARD_MODULES) {
