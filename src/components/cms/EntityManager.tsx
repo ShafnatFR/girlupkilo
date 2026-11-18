@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { getColumnDefs, getMakeEmpty } from '@/lib/cms/column-defs.tsx';
+import { getColumnDefs, getMakeEmpty } from '@/lib/cms/column-defs';
 
 export type CmsRow = Record<string, unknown> & { id: string };
 
