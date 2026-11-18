@@ -1,91 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {
-  BarChart3,
-  CheckSquare,
-  Database,
-  FileText,
-  Images,
-  Settings,
-  type LucideIcon,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { requireUser } from '@/lib/auth';
+import {
+  DASHBOARD_MODULES,
+  type AccentColor,
+  type DashboardModule,
+} from '@/lib/dashboard-modules';
 import type { Profile } from '@/lib/types';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
-const CMS_ROLES = ['admin', 'manager'];
-const CONTENT_ROLES = ['admin', 'manager', 'staff'];
-
-interface ModuleDef {
-  href: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  /** Warna aksen ikon. */
-  color: 'blue' | 'green' | 'purple' | 'gu' | 'amber' | 'slate';
-  /** Peran yang boleh melihat modul; undefined = semua peran. */
-  roles?: string[];
-}
-
-const MODULES: ModuleDef[] = [
-  {
-    href: '/dashboard/submissions',
-    title: 'Pengajuan Saya',
-    description:
-      'Buat dan pantau pengajuan reimbursement Anda, dari draft hingga dibayar.',
-    icon: FileText,
-    color: 'blue',
-  },
-  {
-    href: '/dashboard/approvals',
-    title: 'Persetujuan',
-    description:
-      'Tinjau dan setujui pengajuan reimbursement yang menunggu persetujuan Anda.',
-    icon: CheckSquare,
-    color: 'green',
-    roles: ['manager', 'finance', 'admin'],
-  },
-  {
-    href: '/dashboard/reports',
-    title: 'Laporan',
-    description:
-      'Lihat rekap dan analisis pengajuan reimbursement dalam berbagai bentuk laporan.',
-    icon: BarChart3,
-    color: 'purple',
-  },
-  {
-    href: '/dashboard/content',
-    title: 'Konten',
-    description:
-      'Kelola acara, dokumentasi, artikel, dan e-magazine yang tampil di situs publik.',
-    icon: Images,
-    color: 'gu',
-    roles: CONTENT_ROLES,
-  },
-  {
-    href: '/dashboard/cms',
-    title: 'CMS Konten',
-    description:
-      'Kelola seluruh teks halaman profil publik tanpa mengubah kode.',
-    icon: Database,
-    color: 'amber',
-    roles: CMS_ROLES,
-  },
-  {
-    href: '/dashboard/settings',
-    title: 'Pengaturan',
-    description: 'Perbarui profil, kata sandi, dan preferensi akun Anda.',
-    icon: Settings,
-    color: 'slate',
-  },
-];
-
-const ACCENTS: Record<
-  ModuleDef['color'],
-  { tile: string; ring: string }
-> = {
+const ACCENTS: Record<AccentColor, { tile: string; ring: string }> = {
   blue: {
     tile: 'bg-blue-50 text-blue-600 group-hover:bg-blue-100',
     ring: 'group-hover:ring-blue-200',
@@ -115,8 +42,8 @@ const ACCENTS: Record<
 export default async function DashboardPage() {
   const profile: Profile = await requireUser();
 
-  const modules = MODULES.filter(
-    (mod) => !mod.roles || mod.roles.includes(profile.role)
+  const modules = DASHBOARD_MODULES.filter(
+    (mod: DashboardModule) => !mod.roles || mod.roles.includes(profile.role)
   );
 
   return (
@@ -131,14 +58,14 @@ export default async function DashboardPage() {
       </div>
 
       {/* Launcher ala Odoo: kumpulan ikon modul yang dapat diklik. */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {modules.map((mod) => {
           const Icon = mod.icon;
           const accent = ACCENTS[mod.color];
           return (
             <Link
-              key={mod.href}
-              href={mod.href}
+              key={mod.key}
+              href={mod.home}
               title={mod.description}
               className="group flex flex-col items-center rounded-2xl border border-transparent p-6 text-center transition-all hover:-translate-y-0.5 hover:border-slate-200 hover:bg-white hover:shadow-md"
             >
@@ -149,6 +76,10 @@ export default async function DashboardPage() {
               </span>
               <span className="mt-4 text-sm font-semibold text-slate-800 group-hover:text-slate-900">
                 {mod.title}
+              </span>
+              <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
+                Buka
+                <ArrowRight size={12} />
               </span>
             </Link>
           );
