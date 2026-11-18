@@ -10,7 +10,10 @@ const LINK_GROUPS = [
       { label: 'Beranda', href: '/' },
       { label: 'Visi & Misi', href: '/visi-misi' },
       { label: 'Departemen', href: '/departemen' },
-      { label: 'Program', href: '/#program' },
+      { label: 'Acara', href: '/acara' },
+      { label: 'Artikel', href: '/artikel' },
+      { label: 'Dokumentasi', href: '/dokumentasi' },
+      { label: 'E-Magazine', href: '/e-magazine' },
     ],
   },
   {

@@ -1,136 +1,159 @@
-import { requireUser } from '@/lib/auth';
-import { listOwnReimbursements } from '@/lib/reimbursements';
-import { formatCurrency } from '@/lib/utils';
-import { FileText, CheckCircle, Clock, DollarSign, type LucideIcon } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { STATUS_LABELS, type Reimbursement } from '@/lib/types';
+import {
+  BarChart3,
+  CheckSquare,
+  Database,
+  FileText,
+  Images,
+  Settings,
+  type LucideIcon,
+} from 'lucide-react';
+
+import { requireUser } from '@/lib/auth';
+import type { Profile } from '@/lib/types';
+
+export const metadata: Metadata = { title: 'Dashboard' };
+
+const CMS_ROLES = ['admin', 'manager'];
+const CONTENT_ROLES = ['admin', 'manager', 'staff'];
+
+interface ModuleDef {
+  href: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  /** Warna aksen ikon. */
+  color: 'blue' | 'green' | 'purple' | 'gu' | 'amber' | 'slate';
+  /** Peran yang boleh melihat modul; undefined = semua peran. */
+  roles?: string[];
+}
+
+const MODULES: ModuleDef[] = [
+  {
+    href: '/dashboard/submissions',
+    title: 'Pengajuan Saya',
+    description:
+      'Buat dan pantau pengajuan reimbursement Anda, dari draft hingga dibayar.',
+    icon: FileText,
+    color: 'blue',
+  },
+  {
+    href: '/dashboard/approvals',
+    title: 'Persetujuan',
+    description:
+      'Tinjau dan setujui pengajuan reimbursement yang menunggu persetujuan Anda.',
+    icon: CheckSquare,
+    color: 'green',
+    roles: ['manager', 'finance', 'admin'],
+  },
+  {
+    href: '/dashboard/reports',
+    title: 'Laporan',
+    description:
+      'Lihat rekap dan analisis pengajuan reimbursement dalam berbagai bentuk laporan.',
+    icon: BarChart3,
+    color: 'purple',
+  },
+  {
+    href: '/dashboard/content',
+    title: 'Konten',
+    description:
+      'Kelola acara, dokumentasi, artikel, dan e-magazine yang tampil di situs publik.',
+    icon: Images,
+    color: 'gu',
+    roles: CONTENT_ROLES,
+  },
+  {
+    href: '/dashboard/cms',
+    title: 'CMS Konten',
+    description:
+      'Kelola seluruh teks halaman profil publik tanpa mengubah kode.',
+    icon: Database,
+    color: 'amber',
+    roles: CMS_ROLES,
+  },
+  {
+    href: '/dashboard/settings',
+    title: 'Pengaturan',
+    description: 'Perbarui profil, kata sandi, dan preferensi akun Anda.',
+    icon: Settings,
+    color: 'slate',
+  },
+];
+
+const ACCENTS: Record<
+  ModuleDef['color'],
+  { tile: string; ring: string }
+> = {
+  blue: {
+    tile: 'bg-blue-50 text-blue-600 group-hover:bg-blue-100',
+    ring: 'group-hover:ring-blue-200',
+  },
+  green: {
+    tile: 'bg-green-50 text-green-600 group-hover:bg-green-100',
+    ring: 'group-hover:ring-green-200',
+  },
+  purple: {
+    tile: 'bg-purple-50 text-purple-600 group-hover:bg-purple-100',
+    ring: 'group-hover:ring-purple-200',
+  },
+  gu: {
+    tile: 'bg-gu-50 text-gu-600 group-hover:bg-gu-100',
+    ring: 'group-hover:ring-gu-200',
+  },
+  amber: {
+    tile: 'bg-amber-50 text-amber-600 group-hover:bg-amber-100',
+    ring: 'group-hover:ring-amber-200',
+  },
+  slate: {
+    tile: 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+    ring: 'group-hover:ring-slate-200',
+  },
+};
 
 export default async function DashboardPage() {
-  const profile = await requireUser();
-  const all = await listOwnReimbursements(profile.id);
+  const profile: Profile = await requireUser();
 
-  const stats = {
-    total: all.length,
-    draft: all.filter((r) => r.status === 'draft').length,
-    submitted: all.filter((r) => r.status === 'submitted').length,
-    approved: all.filter((r) => ['manager_approved', 'finance_approved'].includes(r.status)).length,
-    paid: all.filter((r) => r.status === 'paid').length,
-    totalAmount: all.reduce((sum, r) => sum + Number(r.amount), 0),
-    paidAmount: all
-      .filter((r) => r.status === 'paid')
-      .reduce((sum, r) => sum + Number(r.amount), 0),
-  };
-
-  const recent = all.slice(0, 5);
+  const modules = MODULES.filter(
+    (mod) => !mod.roles || mod.roles.includes(profile.role)
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">
           Halo, {profile.full_name || 'Pengguna'} 👋
         </h1>
-        <p className="mt-1 text-sm text-slate-500">Berikut ringkasan reimbursement Anda</p>
+        <p className="mt-1 text-sm text-slate-500">
+          Pilih modul yang ingin Anda buka.
+        </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={FileText} label="Total Pengajuan" value={stats.total.toString()} color="blue" />
-        <StatCard
-          icon={Clock}
-          label="Menunggu Persetujuan"
-          value={stats.submitted.toString()}
-          color="yellow"
-        />
-        <StatCard icon={CheckCircle} label="Disetujui" value={stats.approved.toString()} color="green" />
-        <StatCard
-          icon={DollarSign}
-          label="Total Diajukan"
-          value={formatCurrency(stats.totalAmount)}
-          color="purple"
-        />
-      </div>
-
-      <div className="card">
-        <div className="flex items-center justify-between border-b px-6 py-4">
-          <h2 className="font-semibold text-slate-900">Pengajuan Terbaru</h2>
-          <Link
-            href="/dashboard/submissions"
-            className="text-sm font-medium text-brand-600 hover:text-brand-700"
-          >
-            Lihat Semua
-          </Link>
-        </div>
-        <div className="divide-y">
-          {recent.length === 0 ? (
-            <div className="px-6 py-12 text-center">
-              <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300" />
-              <p className="text-sm text-slate-500">Belum ada pengajuan reimbursement</p>
-              <Link href="/dashboard/submissions/new" className="btn-primary mt-4">
-                Buat Pengajuan Pertama
-              </Link>
-            </div>
-          ) : (
-            recent.map((item: Reimbursement) => (
-              <Link
-                key={item.id}
-                href={`/dashboard/submissions/${item.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50"
+      {/* Launcher ala Odoo: kumpulan ikon modul yang dapat diklik. */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {modules.map((mod) => {
+          const Icon = mod.icon;
+          const accent = ACCENTS[mod.color];
+          return (
+            <Link
+              key={mod.href}
+              href={mod.href}
+              title={mod.description}
+              className="group flex flex-col items-center rounded-2xl border border-transparent p-6 text-center transition-all hover:-translate-y-0.5 hover:border-slate-200 hover:bg-white hover:shadow-md"
+            >
+              <span
+                className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl ring-4 ring-transparent transition-all ${accent.tile} ${accent.ring}`}
               >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-slate-900">{item.title}</p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {item.category} • {new Date(item.expense_date).toLocaleDateString('id-ID')}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="font-semibold text-slate-900">
-                    {formatCurrency(Number(item.amount))}
-                  </span>
-                  <span
-                    className={`badge ${
-                      item.status === 'paid'
-                        ? 'bg-green-100 text-green-700'
-                        : item.status === 'rejected'
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-blue-100 text-blue-700'
-                    }`}
-                  >
-                    {STATUS_LABELS[item.status]}
-                  </span>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
+                <Icon size={28} />
+              </span>
+              <span className="mt-4 text-sm font-semibold text-slate-800 group-hover:text-slate-900">
+                {mod.title}
+              </span>
+            </Link>
+          );
+        })}
       </div>
-    </div>
-  );
-}
-
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  color,
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  color: string;
-}) {
-  const colors: Record<string, string> = {
-    blue: 'bg-blue-100 text-blue-600',
-    yellow: 'bg-yellow-100 text-yellow-600',
-    green: 'bg-green-100 text-green-600',
-    purple: 'bg-purple-100 text-purple-600',
-  };
-
-  return (
-    <div className="card p-6">
-      <div className={`mb-4 inline-flex rounded-lg p-2 ${colors[color]}`}>
-        <Icon size={20} />
-      </div>
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
     </div>
   );
 }

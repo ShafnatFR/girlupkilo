@@ -10,7 +10,10 @@ const NAV_LINKS = [
   { href: '/', label: 'Beranda' },
   { href: '/visi-misi', label: 'Visi & Misi' },
   { href: '/departemen', label: 'Departemen' },
-  { href: '/#program', label: 'Program' },
+  { href: '/acara', label: 'Acara' },
+  { href: '/artikel', label: 'Artikel' },
+  { href: '/dokumentasi', label: 'Dokumentasi' },
+  { href: '/e-magazine', label: 'E-Magazine' },
   { href: '/#tentang', label: 'Tentang' },
 ];
 

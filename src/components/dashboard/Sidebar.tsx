@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Database,
+  Images,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,11 +29,13 @@ const navItems = [
   { href: '/dashboard/submissions', label: 'Pengajuan Saya', icon: FileText },
   { href: '/dashboard/approvals', label: 'Persetujuan', icon: CheckSquare },
   { href: '/dashboard/reports', label: 'Laporan', icon: BarChart3 },
+  { href: '/dashboard/content', label: 'Konten', icon: Images },
   { href: '/dashboard/cms', label: 'CMS Konten', icon: Database },
   { href: '/dashboard/settings', label: 'Pengaturan', icon: Settings },
 ];
 
 const CMS_ROLES = ['admin', 'manager'];
+const CONTENT_ROLES = ['admin', 'manager', 'staff'];
 
 export default function Sidebar({ profile }: SidebarProps) {
   const pathname = usePathname();
@@ -57,6 +60,9 @@ export default function Sidebar({ profile }: SidebarProps) {
     }
     if (item.href === '/dashboard/cms') {
       return CMS_ROLES.includes(profile.role);
+    }
+    if (item.href === '/dashboard/content') {
+      return CONTENT_ROLES.includes(profile.role);
     }
     return true;
   });

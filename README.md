@@ -7,8 +7,9 @@ Aplikasi web untuk **Girl Up Universitas Indonesia** — menggabungkan situs pub
 
 | Modul         | Rute                               | Pengakses        | Keterangan |
 | ------------- | ---------------------------------- | ---------------- | ---------- |
-| Situs publik  | `/`, `/visi-misi`, `/departemen`   | Guest / publik   | Landing page, visi–misi, struktur departemen & pengurus |
-| CMS           | `/dashboard/cms/*`                 | Admin, Manajer   | Kelola seluruh konten halaman publik dari browser |
+| Situs publik  | `/`, `/visi-misi`, `/departemen`, `/acara`, `/artikel`, `/dokumentasi`, `/e-magazine` | Guest / publik | Landing page, profil, agenda, artikel, galeri, e-magazine |
+| CMS           | `/dashboard/cms/*`                 | Admin, Manajer   | Kelola seluruh konten halaman profil dari browser |
+| Konten        | `/dashboard/content/*`             | Admin, Manajer, Staf | Kelola acara, dokumentasi, artikel, e-magazine |
 | Autentikasi   | `/login`, `/register`              | Publik           | Masuk / daftar akun internal |
 | Reimbursement | `/dashboard/*`                     | Pengguna login   | Pengajuan, persetujuan berjenjang, laporan |
 
@@ -26,6 +27,8 @@ Aplikasi web untuk **Girl Up Universitas Indonesia** — menggabungkan situs pub
 .
 ├── db/
 │   └── schema.sql              # skema database (users, sessions, reimbursements)
+│   └── cms.sql                 # skema CMS profil (departemen, pengurus, program, dst.)
+│   └── content.sql             # skema modul konten (acara, galeri, artikel, e-magazine)
 ├── scripts/
 │   └── create-admin.mjs        # pembuatan akun admin via CLI
 ├── src/
@@ -33,19 +36,28 @@ Aplikasi web untuk **Girl Up Universitas Indonesia** — menggabungkan situs pub
 │   │   ├── (public)/
 │   │   │   ├── layout.tsx      # kerangka halaman publik
 │   │   │   ├── visi-misi/page.tsx
-│   │   │   └── departemen/page.tsx
+│   │   │   ├── departemen/page.tsx
+│   │   │   ├── acara/page.tsx
+│   │   │   ├── artikel/        # daftar + [slug] detail
+│   │   │   ├── dokumentasi/page.tsx
+│   │   │   └── e-magazine/page.tsx
 │   │   ├── page.tsx            # landing page
-│   ├── sitemap.ts robots.ts # SEO untuk halaman publik
+│   │   ├── sitemap.ts robots.ts # SEO untuk halaman publik
 │   │   ├── login/ register/    # autentikasi
 │   │   ├── api/                # route handler
-│   │   ├── dashboard/          # modul reimbursement (protected)
+│   │   ├── dashboard/          # modul reimbursement + cms/ + content/ (protected)
 │   │   ├── layout.tsx
 │   │   └── globals.css
 │   ├── components/
 │   │   ├── public/             # PublicShell, SiteNavbar, SiteFooter
+│   │   ├── cms/                # EntityManager, StatusBadge (CRUD reusable)
 │   │   ├── auth/ dashboard/ approvals/ submissions/ settings/
 │   ├── lib/
-│   │   ├── site.ts             # ← sumber konten halaman publik
+│   │   ├── site.ts             # ← konten default profil publik
+│   │   ├── media.ts            # loader konten (acara/artikel/galeri/e-magazine) + fallback
+│   │   ├── media-defaults.ts   # ← data default modul konten
+│   │   ├── content.ts          # perakit konten profil (DB → default)
+│   │   ├── cms/                # admin CRUD, queries, validate, icons, guard
 │   │   ├── auth.ts db.ts types.ts utils.ts validation.ts reimbursements.ts
 │   └── middleware.ts           # proteksi /dashboard/*
 ├── tailwind.config.js
@@ -54,13 +66,17 @@ Aplikasi web untuk **Girl Up Universitas Indonesia** — menggabungkan situs pub
 
 ## Halaman Publik (Guest)
 
-Tiga halaman yang dapat dibuka **tanpa login**:
+Halaman yang dapat dibuka **tanpa login**:
 
 - **`/`** — hero, statistik, latar belakang Girl Up, 4 pilar, nilai inti,
   program unggulan, pratinjau departemen, dan tonggak waktu.
 - **`/visi-misi`** — pernyataan visi, 5 misi, nilai inti, dan alur kerja.
 - **`/departemen`** — struktur organisasi, jajaran pengurus, 7 departemen beserta
   fokus kerja, dan alur bergabung.
+- **`/acara`** — daftar diskusi, kampanye, dan kegiatan.
+- **`/artikel`** — daftar artikel; **`/artikel/[slug]`** — halaman baca artikel.
+- **`/dokumentasi`** — galeri dokumentasi kegiatan.
+- **`/e-magazine`** — daftar terbitan digital beserta tautan unduh.
 
 ### Mengubah konten
 
@@ -162,7 +178,55 @@ menyimpan data sebagai draft tanpa menampilkannya ke publik.
 | PUT | `/api/cms/settings` | Simpan satu dokumen |
 | DELETE | `/api/cms/settings?key=` | Kembalikan satu bagian ke nilai default |
 
-`entity` bernilai `departments`, `leaders`, `programs`, atau `milestones`.
+`entity` bernilai `departments`, `leaders`, `programs`, `milestones`,
+`events`, `gallery`, `articles`, atau `emagazines`.
+
+## Modul Konten (Acara, Artikel, Dokumentasi, E-Magazine)
+
+Selain konten profil, terdapat empat modul konten publik yang dapat dikelola
+dari browser melalui **`/dashboard/content`**. Terbuka untuk peran **admin**,
+**manajer**, dan **staf** — karena staf/officer-lah yang mengisi dokumentasi
+kegiatan sehari-hari.
+
+| Halaman | Rute publik | Mengatur |
+| ------- | ----------- | -------- |
+| Acara | `/acara` | Diskusi, kampanye, dan kegiatan (tanggal, lokasi, kategori, sampul) |
+| Dokumentasi / Galeri | `/dokumentasi` | Foto dokumentasi kegiatan beserta keterangan |
+| Artikel | `/artikel` (+ `/artikel/[slug]`) | Esai, kajian, dan karya tulis (penulis, ringkasan, isi) |
+| E-Magazine | `/e-magazine` | Terbitan digital beserta tautan berkas |
+
+### Penerapan skema
+
+Skema modul konten terpisah dan independen dari skema utama maupun CMS profil:
+
+```bash
+# Jalankan sebagai PEMILIK skema (bukan role aplikasi)
+psql -h <host> -U postgres -d girlupkilo -f db/content.sql
+```
+
+File ini idempoten — aman dijalankan ulang. Membuat `set_updated_at()` bila
+belum ada, lalu tabel `cms_events`, `cms_gallery`, `cms_articles`, dan
+`cms_emagazines`, lengkap dengan seed awal (hanya mengisi tabel yang kosong) dan
+grant akses untuk role aplikasi.
+
+### Penyimpanan & penyajian
+
+| Tabel | Isi |
+| ----- | --- |
+| `cms_events` | Acara |
+| `cms_gallery` | Dokumentasi / galeri |
+| `cms_articles` | Artikel |
+| `cms_emagazines` | E-magazine |
+
+Pola penyajian sama seperti CMS profil: halaman publik membaca database
+terlebih dahulu, dan bila tabel kosong atau query gagal, memakai nilai default
+dari **`src/lib/media-defaults.ts`** sehingga halaman tidak pernah kosong.
+
+```
+Database (cms_events/gallery/articles/emagazines) ──► src/lib/media.ts ──► halaman publik
+         │                                                  │
+         └─ kosong/gagal ────────────────────────────────────┴──► src/lib/media-defaults.ts
+```
 
 ## Setup
 
@@ -263,8 +327,8 @@ sudo certbot --nginx -d your-domain.com
 
 | Peran    | Akses |
 | -------- | ----- |
-| Staf     | Membuat dan mengelola pengajuan sendiri |
-| Manajer  | Menyetujui tahap 1 |
+| Staf     | Membuat dan mengelola pengajuan sendiri; mengelola modul konten (acara, dokumentasi, artikel, e-magazine) |
+| Manajer  | Menyetujui tahap 1; mengelola konten & CMS profil |
 | Keuangan | Menyetujui tahap 2 dan menandai pembayaran |
 | Admin    | Seluruh fitur |
 

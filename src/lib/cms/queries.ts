@@ -50,6 +50,58 @@ export interface MilestoneRow {
   published: boolean;
 }
 
+export interface EventRow {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  event_date: string | null;
+  location: string;
+  category: string;
+  cover_image_url: string;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+}
+
+export interface GalleryRow {
+  id: string;
+  title: string;
+  caption: string;
+  image_url: string;
+  category: string;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+}
+
+export interface ArticleRow {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  category: string;
+  cover_image_url: string;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+}
+
+export interface EmagazineRow {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  issue: string;
+  cover_image_url: string;
+  file_url: string;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+}
+
 export type SettingsMap = Record<string, Record<string, unknown>>;
 
 // ------------------------------------------------------------------
@@ -121,6 +173,62 @@ export async function loadMilestones(): Promise<MilestoneRow[]> {
     return await query<MilestoneRow>(
       `SELECT id, year, title, description, sort_order, published
          FROM public.cms_milestones
+        WHERE published = true
+        ORDER BY sort_order ASC, created_at ASC`
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function loadEvents(): Promise<EventRow[]> {
+  try {
+    return await query<EventRow>(
+      `SELECT id, slug, title, description, event_date, location, category,
+              cover_image_url, sort_order, published, created_at
+         FROM public.cms_events
+        WHERE published = true
+        ORDER BY event_date DESC NULLS LAST, sort_order ASC, created_at ASC`
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function loadGallery(): Promise<GalleryRow[]> {
+  try {
+    return await query<GalleryRow>(
+      `SELECT id, title, caption, image_url, category, sort_order, published,
+              created_at
+         FROM public.cms_gallery
+        WHERE published = true
+        ORDER BY sort_order ASC, created_at ASC`
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function loadArticles(): Promise<ArticleRow[]> {
+  try {
+    return await query<ArticleRow>(
+      `SELECT id, slug, title, excerpt, content, author, category,
+              cover_image_url, sort_order, published, created_at
+         FROM public.cms_articles
+        WHERE published = true
+        ORDER BY sort_order ASC, created_at ASC`
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function loadEmagazines(): Promise<EmagazineRow[]> {
+  try {
+    return await query<EmagazineRow>(
+      `SELECT id, slug, title, description, issue, cover_image_url, file_url,
+              sort_order, published, created_at
+         FROM public.cms_emagazines
         WHERE published = true
         ORDER BY sort_order ASC, created_at ASC`
     );

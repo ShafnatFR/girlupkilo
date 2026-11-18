@@ -194,6 +194,90 @@ export function parseMilestone(body: Record<string, unknown>) {
   };
 }
 
+/** Validasi format tanggal ISO (YYYY-MM-DD) atau kembalikan null bila kosong. */
+export function nullableDate(
+  value: unknown,
+  label: string
+): string | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== 'string') {
+    throw new CmsValidationError(`${label} harus berupa teks tanggal`);
+  }
+  const text = value.trim();
+  if (text === '') return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    throw new CmsValidationError(`${label} harus berformat YYYY-MM-DD`);
+  }
+  return text;
+}
+
+export function parseEvent(body: Record<string, unknown>) {
+  const title = requiredText(body.title, 'Judul acara', 160);
+  return {
+    slug: slugify(
+      typeof body.slug === 'string' && body.slug.trim() !== ''
+        ? body.slug
+        : title
+    ),
+    title,
+    description: optionalText(body.description, 'Deskripsi', 2000),
+    event_date: nullableDate(body.event_date, 'Tanggal acara'),
+    location: optionalText(body.location, 'Lokasi', 160),
+    category: optionalText(body.category, 'Kategori', 80),
+    cover_image_url: optionalText(body.cover_image_url, 'URL gambar sampul', 500),
+    sort_order: integer(body.sort_order, 'Urutan', { fallback: 0, min: 0 }),
+    published: boolean(body.published ?? false, 'Status tayang'),
+  };
+}
+
+export function parseGallery(body: Record<string, unknown>) {
+  return {
+    title: requiredText(body.title, 'Judul', 160),
+    caption: optionalText(body.caption, 'Keterangan', 500),
+    image_url: optionalText(body.image_url, 'URL gambar', 500),
+    category: optionalText(body.category, 'Kategori', 80),
+    sort_order: integer(body.sort_order, 'Urutan', { fallback: 0, min: 0 }),
+    published: boolean(body.published ?? false, 'Status tayang'),
+  };
+}
+
+export function parseArticle(body: Record<string, unknown>) {
+  const title = requiredText(body.title, 'Judul artikel', 160);
+  return {
+    slug: slugify(
+      typeof body.slug === 'string' && body.slug.trim() !== ''
+        ? body.slug
+        : title
+    ),
+    title,
+    excerpt: optionalText(body.excerpt, 'Ringkasan', 500),
+    content: optionalText(body.content, 'Isi', 20000),
+    author: optionalText(body.author, 'Penulis', 160),
+    category: optionalText(body.category, 'Kategori', 80),
+    cover_image_url: optionalText(body.cover_image_url, 'URL gambar sampul', 500),
+    sort_order: integer(body.sort_order, 'Urutan', { fallback: 0, min: 0 }),
+    published: boolean(body.published ?? false, 'Status tayang'),
+  };
+}
+
+export function parseEmagazine(body: Record<string, unknown>) {
+  const title = requiredText(body.title, 'Judul e-magazine', 160);
+  return {
+    slug: slugify(
+      typeof body.slug === 'string' && body.slug.trim() !== ''
+        ? body.slug
+        : title
+    ),
+    title,
+    description: optionalText(body.description, 'Deskripsi', 2000),
+    issue: optionalText(body.issue, 'Edisi', 80),
+    cover_image_url: optionalText(body.cover_image_url, 'URL gambar sampul', 500),
+    file_url: optionalText(body.file_url, 'URL berkas', 500),
+    sort_order: integer(body.sort_order, 'Urutan', { fallback: 0, min: 0 }),
+    published: boolean(body.published ?? false, 'Status tayang'),
+  };
+}
+
 /** Baca body JSON atau lempar error validasi 400. */
 export async function readJson(request: Request): Promise<Record<string, unknown>> {
   let body: unknown;
